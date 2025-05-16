@@ -45,3 +45,7 @@ backend/.env
 # System files
 .DS_Store
 Thumbs.db
+
+.vscode
+obj
+.vs

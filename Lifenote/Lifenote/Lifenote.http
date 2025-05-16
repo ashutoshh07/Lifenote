@@ -1,0 +1,6 @@
+@Lifenote_HostAddress = http://localhost:5025
+
+GET {{Lifenote_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
