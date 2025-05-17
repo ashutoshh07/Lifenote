@@ -1,24 +1,30 @@
 namespace Lifenote.Application.DTOs;
 
-public class NoteDto
-{
-    public Guid Noteid { get; set; }
-    public Guid Userid { get; set; }
-    public string? Title { get; set; }
-    public string? Content { get; set; }
-    public string? Type { get; set; }
-    public string? Colortag { get; set; }
-    public bool? Pinned { get; set; }
-    public DateTime Createdat { get; set; }
-    public DateTime? Updatedat { get; set; }
-}
+public record NoteDto(
+    Guid NoteId,
+    Guid UserId,
+    string? Title,
+    string? Content,
+    string? Type,
+    string? ColorTag,
+    bool? Pinned,
+    DateTime CreatedAt,
+    DateTime? UpdatedAt
+);
 
-public class CreateNoteDto
-{
-    public Guid Userid { get; set; }
-    public string? Title { get; set; }
-    public string? Content { get; set; }
-    public string? Type { get; set; }
-    public string? Colortag { get; set; }
-    public bool? Pinned { get; set; }
-}
+public record CreateNoteDto(
+    Guid UserId,
+    string? Title,
+    string? Content,
+    string? Type,
+    string? ColorTag,
+    bool? Pinned = false
+);
+
+public record UpdateNoteDto(
+    string? Title,
+    string? Content,
+    string? Type,
+    string? ColorTag,
+    bool? Pinned
+);

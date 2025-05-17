@@ -15,11 +15,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register repositories
+// Register repositories and services
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
-// Register application services
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<NoteService>();
+builder.Services.AddScoped<ReminderService>();
+builder.Services.AddScoped<PomodoroService>();
 
 var app = builder.Build();
 

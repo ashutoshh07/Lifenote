@@ -19,7 +19,7 @@ public class NotesController : ControllerBase
     public async Task<ActionResult<NoteDto>> CreateNote(CreateNoteDto createNoteDto)
     {
         var note = await _noteService.CreateNoteAsync(createNoteDto);
-        return CreatedAtAction(nameof(GetNote), new { id = note.Noteid }, note);
+        return CreatedAtAction(nameof(GetNote), new { id = note.NoteId }, note);
     }
 
     [HttpGet("{id:guid}")]

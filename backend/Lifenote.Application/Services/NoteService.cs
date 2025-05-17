@@ -18,11 +18,11 @@ public class NoteService
         var Note = new note
         {
             noteid = Guid.NewGuid(),
-            userid = createNoteDto.Userid,
+            userid = createNoteDto.UserId,
             title = createNoteDto.Title,
             content = createNoteDto.Content,
             type = createNoteDto.Type,
-            colortag = createNoteDto.Colortag,
+            colortag = createNoteDto.ColorTag,
             pinned = createNoteDto.Pinned,
             createdat = DateTime.UtcNow
         };
@@ -52,7 +52,7 @@ public class NoteService
         note.title = updateNoteDto.Title;
         note.content = updateNoteDto.Content;
         note.type = updateNoteDto.Type;
-        note.colortag = updateNoteDto.Colortag;
+        note.colortag = updateNoteDto.ColorTag;
         note.pinned = updateNoteDto.Pinned;
         note.updatedat = DateTime.UtcNow;
 
@@ -67,19 +67,16 @@ public class NoteService
         await _noteRepository.DeleteAsync(note);
     }
 
-    private static NoteDto MapToDto(note note)
-    {
-        return new NoteDto
-        {
-            Noteid = note.noteid,
-            Userid = note.userid,
-            Title = note.title,
-            Content = note.content,
-            Type = note.type,
-            Colortag = note.colortag,
-            Pinned = note.pinned,
-            Createdat = note.createdat,
-            Updatedat = note.updatedat
-        };
-    }
+    private static NoteDto MapToDto(note note) => new NoteDto(
+        note.noteid,
+        note.userid,
+        note.title,
+        note.content,
+        note.type,
+        note.colortag,
+        note.pinned,
+        note.createdat,
+        note.updatedat
+    );
+
 }
