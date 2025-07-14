@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lifenote.Application\Lifenote.Application.csproj" />
-    <ProjectReference Include="..\Lifenote.Infrastructure\Lifenote.Infrastructure.csproj" />
+    
   </ItemGroup>
 
 </Project>

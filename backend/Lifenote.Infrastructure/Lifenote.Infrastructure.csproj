@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lifenote.Application\Lifenote.Application.csproj" />
+    <ProjectReference Include="..\Lifenote.Core\Lifenote.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

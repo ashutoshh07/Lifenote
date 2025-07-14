@@ -1,10 +1,11 @@
 using Lifenote.Application.DTOs;
+using Lifenote.Application.Interfaces;
 using Lifenote.Core.Entities;
 using Lifenote.Core.Interfaces;
 
 namespace Lifenote.Application.Services;
 
-public class NoteService
+public class NoteService : INoteService
 {
     private readonly IGenericRepository<note> _noteRepository;
 

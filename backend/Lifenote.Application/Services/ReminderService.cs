@@ -1,10 +1,11 @@
 using Lifenote.Application.DTOs;
+using Lifenote.Application.Interfaces;
 using Lifenote.Core.Entities;
 using Lifenote.Core.Interfaces;
 
 namespace Lifenote.Application.Services;
 
-public class ReminderService
+public class ReminderService : IReminderService
 {
     private readonly IGenericRepository<reminder> _reminderRepository;
 

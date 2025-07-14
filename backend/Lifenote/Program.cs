@@ -1,6 +1,7 @@
+using Lifenote.Application.Interfaces;
 using Lifenote.Application.Services;
-using Lifenote.Core.Entities;
 using Lifenote.Core.Interfaces;
+using Lifenote.Infrastructure.Data;
 using Lifenote.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,10 +18,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Register repositories and services
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<NoteService>();
-builder.Services.AddScoped<ReminderService>();
-builder.Services.AddScoped<PomodoroService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<INoteService, NoteService>();
+builder.Services.AddScoped<IReminderService, ReminderService>();
+builder.Services.AddScoped<IPomodoroService, PomodoroService>();
 
 var app = builder.Build();
 

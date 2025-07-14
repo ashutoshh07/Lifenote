@@ -1,10 +1,11 @@
 using Lifenote.Application.DTOs;
+using Lifenote.Application.Interfaces;
 using Lifenote.Core.Entities;
 using Lifenote.Core.Interfaces;
 
 namespace Lifenote.Application.Services;
 
-public class PomodoroService
+public class PomodoroService : IPomodoroService
 {
     private readonly IGenericRepository<pomodorosession> _sessionRepository;
     private readonly IGenericRepository<activepomodoro> _activeRepository;

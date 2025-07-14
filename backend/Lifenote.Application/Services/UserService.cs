@@ -1,10 +1,11 @@
 using Lifenote.Application.DTOs;
+using Lifenote.Application.Interfaces;
 using Lifenote.Core.Entities;
 using Lifenote.Core.Interfaces;
 
 namespace Lifenote.Application.Services;
 
-public class UserService
+public class UserService : IUserService
 {
     private readonly IGenericRepository<User> _userRepository;
 
