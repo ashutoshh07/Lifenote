@@ -1,5 +1,5 @@
 <div class="sidebar" [class.collapsed]="layoutService.sidebarCollapsed()">
-  <div class="sidebar-header">
+  <div  [ngClass]="{'!justify-center': layoutService.sidebarCollapsed() }" class="sidebar-header">
     <div class="logo">
       <a routerLink="/">
         <h1 *ngIf="!layoutService.sidebarCollapsed()">Lifenote</h1>
