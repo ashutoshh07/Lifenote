@@ -1,1 +1,15 @@
-<p>tasks-page works!</p>
+<div class="tasks-page">
+  <header class="page-header">
+    <h1>📝 My Tasks</h1>
+    <button class="add-task-btn">New Task</button>
+  </header>
+
+  <div class="tasks-container">
+    <div class="task-list">
+      <div *ngFor="let task of tasks" class="task-item">
+        <input type="checkbox" [checked]="task.completed">
+        <span>{{ task.title }}</span>
+      </div>
+    </div>
+  </div>
+</div>

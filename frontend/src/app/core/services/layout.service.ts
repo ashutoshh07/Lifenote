@@ -17,6 +17,7 @@ export class LayoutService {
   
   // Navigation state
   private sidebarOpenSignal = signal<boolean>(false);
+  private sidebarCollapsedSignal = signal<boolean>(false);
   private navigationItems = signal<NavigationItem[]>([
     {
       id: 'tasks',
@@ -47,6 +48,7 @@ export class LayoutService {
 
   // Public readonly signals
   sidebarOpen = this.sidebarOpenSignal.asReadonly();
+  sidebarCollapsed = this.sidebarCollapsedSignal.asReadonly();
   navItems = this.navigationItems.asReadonly();
   
   // Computed layout decisions
@@ -80,6 +82,10 @@ export class LayoutService {
   // Actions
   toggleSidebar(): void {
     this.sidebarOpenSignal.update(open => !open);
+  }
+
+  toggleSidebarCollapsed(): void {
+    this.sidebarCollapsedSignal.update(collapsed => !collapsed);
   }
 
   closeSidebar(): void {

@@ -1,1 +1,46 @@
-<p>desktop-sidebar works!</p>
+<div class="sidebar" [class.collapsed]="layoutService.sidebarCollapsed()">
+  <div class="sidebar-header">
+    <div class="logo">
+      <a routerLink="/">
+        <h1 *ngIf="!layoutService.sidebarCollapsed()">Lifenote</h1>
+      </a>
+    </div>
+    <button class="collapse-button" (click)="layoutService.toggleSidebarCollapsed()">
+      <!-- <lucide-icon name="panel-left-close" *ngIf="!layoutService.sidebarCollapsed()"></lucide-icon>
+      <lucide-icon name="panel-right-close" *ngIf="layoutService.sidebarCollapsed()"></lucide-icon> -->
+    </button>
+  </div>
+  <nav>
+    <ul>
+      <li>
+        <a routerLink="/tasks" routerLinkActive="active">
+          <i class="icon-tasks"></i>
+          <span *ngIf="!(layoutService.sidebarCollapsed())">Tasks</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/pomodoro" routerLinkActive="active">
+          <i class="icon-pomodoro"></i>
+          <span *ngIf="!(layoutService.sidebarCollapsed())">Pomodoro</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/habits" routerLinkActive="active">
+          <i class="icon-habits"></i>
+          <span *ngIf="!(layoutService.sidebarCollapsed())">Habits</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/settings" routerLinkActive="active">
+          <i class="icon-settings"></i>
+          <span *ngIf="!(layoutService.sidebarCollapsed())">Settings</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <div class="collapse-button-container">
+    <button (click)="layoutService.toggleSidebarCollapsed()">
+      <i [class]="(layoutService.sidebarCollapsed()) ? 'icon-arrow-right' : 'icon-arrow-left'"></i>
+    </button>
+  </div>
+</div>

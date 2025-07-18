@@ -1,1 +1,9 @@
-<router-outlet />
+<div class="app-layout">
+  <app-desktop-sidebar class="desktop-only"></app-desktop-sidebar>
+  
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <app-mobile-bottom-nav class="mobile-only"></app-mobile-bottom-nav>
+</div>

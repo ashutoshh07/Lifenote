@@ -1,1 +1,41 @@
-<p>pomodoro-page works!</p>
+<div class="pomodoro-page">
+  <header class="page-header">
+    <h1>🍅 Pomodoro Timer</h1>
+  </header>
+  
+  <div class="pomodoro-content">
+    <div class="timer-card">
+      <div class="timer-types">
+        <button 
+          [class.active]="(pomodoroService.type$ | async) === 'pomodoro'"
+          (click)="pomodoroService.setType('pomodoro')">
+          Pomodoro
+        </button>
+        <button 
+          [class.active]="(pomodoroService.type$ | async) === 'short-break'"
+          (click)="pomodoroService.setType('short-break')">
+          Short Break
+        </button>
+        <button 
+          [class.active]="(pomodoroService.type$ | async) === 'long-break'"
+          (click)="pomodoroService.setType('long-break')">
+          Long Break
+        </button>
+      </div>
+      <div class="timer-display">
+        {{ pomodoroService.time$ | async }}
+      </div>
+      <div class="timer-controls">
+        <button 
+          class="start-button"
+          [class.running]="pomodoroService.running$ | async"
+          (click)="pomodoroService.running$.value ? pomodoroService.stop() : pomodoroService.start()">
+          {{ (pomodoroService.running$ | async) ? 'Stop' : 'Start' }}
+        </button>
+        <button class="reset-button" (click)="pomodoroService.reset()">
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

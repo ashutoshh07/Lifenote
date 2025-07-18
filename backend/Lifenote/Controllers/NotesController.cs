@@ -1,5 +1,5 @@
 using Lifenote.Application.DTOs;
-using Lifenote.Application.Services;
+using Lifenote.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lifenote.Controllers;
@@ -8,9 +8,9 @@ namespace Lifenote.Controllers;
 [Route("api/[controller]")]
 public class NotesController : ControllerBase
 {
-    private readonly NoteService _noteService;
+    private readonly INoteService _noteService;
 
-    public NotesController(NoteService noteService)
+    public NotesController(INoteService noteService)
     {
         _noteService = noteService;
     }

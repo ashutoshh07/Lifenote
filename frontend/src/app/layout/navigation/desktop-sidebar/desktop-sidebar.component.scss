@@ -1,0 +1,105 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  background-color: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+  height: 100vh;
+  padding: 1.5rem;
+  transition: width 0.3s ease;
+
+  &.collapsed {
+    width: 80px;
+
+    .logo h1, nav span {
+      display: none;
+    }
+
+    .logo a {
+      justify-content: center;
+    }
+
+    nav ul li a {
+      justify-content: center;
+    }
+  }
+
+  .logo {
+    margin-bottom: 2rem;
+    a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #1e293b;
+
+      img {
+        height: 40px;
+        margin-right: 0.75rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+    }
+  }
+
+  nav {
+    flex-grow: 1;
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        a {
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          border-radius: 0.5rem;
+          text-decoration: none;
+          color: #475569;
+          font-weight: 500;
+          transition: background-color 0.2s, color 0.2s;
+
+          &:hover {
+            background-color: #e2e8f0;
+          }
+
+          &.active {
+            background-color: #6366f1;
+            color: white;
+          }
+
+          i {
+            margin-right: 1rem;
+            font-size: 1.25rem;
+          }
+        }
+      }
+    }
+  }
+
+  .collapse-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+
+    button {
+      background: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #e2e8f0;
+      }
+
+      i {
+        font-size: 1.25rem;
+      }
+    }
+  }
+}
