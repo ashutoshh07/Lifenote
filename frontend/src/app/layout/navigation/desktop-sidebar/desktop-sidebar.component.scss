@@ -2,8 +2,7 @@
   display: flex;
   flex-direction: column;
   width: 250px;
-  background-color: #f8fafc;
-  border-right: 1px solid #e2e8f0;
+  background-color: var(--card);
   height: 100vh;
   padding: 1.5rem;
   transition: width 0.3s ease;
@@ -11,7 +10,8 @@
   &.collapsed {
     width: 80px;
 
-    .logo h1, nav span {
+    .logo h1,
+    nav span {
       display: none;
     }
 
@@ -29,7 +29,7 @@
       display: flex;
       align-items: center;
       text-decoration: none;
-      color: #1e293b;
+      color: var(--foreground);
 
       img {
         height: 40px;
@@ -59,17 +59,18 @@
           margin-bottom: 7px;
           border-radius: 0.5rem;
           text-decoration: none;
-          color: #475569;
+          // color: var(--muted-foreground);
           font-weight: 500;
           transition: background-color 0.2s, color 0.2s;
 
           &:hover {
-            background-color: #e2e8f0;
+            background-color: var(--primary);
+            color: var(--primary-foreground);
           }
 
           &.active {
-            background-color: #6366f1;
-            color: white;
+            background-color: var(--primary);
+            color: var(--primary-foreground);
           }
 
           i {
@@ -85,13 +86,13 @@
     background: none;
     border: none;
     cursor: pointer;
-   
+    color: var(--foreground);
   }
 
   .sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px
+    margin-bottom: 30px;
   }
 }

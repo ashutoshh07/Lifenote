@@ -1,32 +1,14 @@
-<div class="settings-page">
-    <header class="page-header">
-        <h1>⚙️ Settings</h1>
-        <p>Customize your productivity experience</p>
-    </header>
+<div class="pomodoro-page flex justify-center items-center p-4">
 
-    <div class="settings-content">
-        <div class="placeholder-card">
-            <h3>🎛️ App Configuration</h3>
-            <p>Your settings panel will go here</p>
-            <div class="settings-preview">
-                <div class="setting-group">
-                    <h4>🍅 Pomodoro Settings</h4>
-                    <div class="setting-item">Focus Duration: 25 minutes</div>
-                    <div class="setting-item">Short Break: 5 minutes</div>
-                    <div class="setting-item">Long Break: 15 minutes</div>
-                </div>
-                <div class="setting-group">
-                    <h4>🎨 Appearance</h4>
-                    <div class="setting-item">Theme: Auto</div>
-                    <div class="setting-item">Notifications: Enabled</div>
-                </div>
-            </div>
-            <ul>
-                <li>Timer customization</li>
-                <li>Theme preferences</li>
-                <li>Notification settings</li>
-                <li>Data export/import</li>
-            </ul>
-        </div>
+  <div class="settings-card bg-white dark:bg-gray-800 rounded-2xl !shadow-lg w-full max-w-md">
+    <label>Appearance</label>
+    <div class="theme-types flex justify-center space-x-2 mb-8">
+      <button [class.active]="currentTheme === theme.Dark" (click)="setTheme(theme.Dark)"
+        class="px-4 py-2 rounded-full text-sm font-medium">Dark</button>
+      <button [class.active]="currentTheme === theme.Light" (click)="setTheme(theme.Light)"
+        class="px-4 py-2 rounded-full text-sm font-medium">Light</button>
+      <button [class.active]="currentTheme === theme.System" (click)="setTheme(theme.System)"
+        class="px-4 py-2 rounded-full text-sm font-medium">System</button>
     </div>
+  </div>
 </div>

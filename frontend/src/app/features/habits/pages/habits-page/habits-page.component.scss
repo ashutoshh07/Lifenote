@@ -1,68 +1,68 @@
- .habits-page {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+.habits-page {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-    .page-header {
-      margin-bottom: 2rem;
-      text-align: center;
-    }
+.page-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
 
-    .page-header h1 {
-      font-size: 2.5rem;
-      color: #059669;
-      margin-bottom: 0.5rem;
-    }
+.page-header h1 {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
 
-    .page-header p {
-      color: #6b7280;
-      font-size: 1.1rem;
-    }
+.page-header p {
+    color: var(--muted-foreground);
+    font-size: 1.1rem;
+}
 
-    .placeholder-card {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
+.placeholder-card {
+    background: var(--card);
+    color: var(--card-foreground);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
 
-    .habit-preview {
-      margin: 1.5rem 0;
-    }
+.habit-preview {
+    margin: 1.5rem 0;
+}
 
-    .habit-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.5rem;
-      margin: 0.5rem 0;
-      background: #f3f4f6;
-      border-radius: 8px;
-      max-width: 300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+.habit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    background: var(--muted);
+    border-radius: 8px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-    .streak {
-      font-size: 0.8rem;
-      color: #059669;
-      font-weight: 600;
-    }
+.streak {
+    font-size: 0.8rem;
+    color: var(--primary);
+    font-weight: 600;
+}
 
-    .placeholder-card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: #374151;
-    }
+.placeholder-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--foreground);
+}
 
-    .placeholder-card ul {
-      text-align: left;
-      max-width: 300px;
-      margin: 1rem auto;
-    }
+.placeholder-card ul {
+    text-align: left;
+    max-width: 300px;
+    margin: 1rem auto;
+}
 
-    .placeholder-card li {
-      margin: 0.5rem 0;
-      color: #6b7280;
-    }
+.placeholder-card li {
+    margin: 0.5rem 0;
+    color: var(--muted-foreground);
+}

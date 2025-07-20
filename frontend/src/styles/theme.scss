@@ -1,0 +1,47 @@
+@layer base {
+  :root {
+    /* Light Mode using your palette's spirit */
+    --background: #f9fafb; /* Clean light gray */
+    --foreground: #0B192C; /* Very Dark Blue for text */
+    --card: #ffffff;
+    --card-foreground: #0B192C;
+    --popover: #ffffff;
+    --popover-foreground: #0B192C;
+    --primary: #FF6500; /* Bright Orange */
+    --primary-foreground: #ffffff; /* White text on orange */
+    --secondary: #1E3E62; /* Dark Slate Blue */
+    --secondary-foreground: #ffffff;
+    --muted: #e5e7eb; /* Standard light muted gray */
+    --muted-foreground: #1E3E62; /* Dark Slate Blue for muted text */
+    --accent: #1E3E62;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444; /* A standard red */
+    --destructive-foreground: #ffffff;
+    --border: #e5e7eb;
+    --input: #e5e7eb;
+    --ring: #FF6500;
+  }
+
+  .dark {
+    /* Dark Mode using your palette directly */
+    --background: #10223a; /* Black */
+    --foreground: #f9fafb; /* Off-white text */
+    --card: #0B192C; /* Very Dark Blue */
+    --card-foreground: #f9fafb;
+    --popover: #0B192C;
+    --popover-foreground: #f9fafb;
+    --primary: #FF6500; /* Bright Orange */
+    --primary-foreground: #000000; /* Black text on orange for contrast */
+    --secondary: #1E3E62; /* Dark Slate Blue */
+    --secondary-foreground: #f9fafb;
+    --muted: #1E3E62;
+    --muted-foreground: #9ca3af; /* A lighter gray for muted text */
+    --accent: #1E3E62;
+    --accent-foreground: #f9fafb;
+    --destructive: #f87171; /* A standard light red */
+    --destructive-foreground: #000000;
+    --border: #1E3E62;
+    --input: #1E3E62;
+    --ring: #FF6500;
+  }
+}

@@ -1,10 +1,19 @@
-<div class="tasks-page">
-  <div class="tasks-container">
-    <div class="task-list">
-      <div *ngFor="let task of tasks" class="task-item">
-        <input type="checkbox" [checked]="task.completed">
-        <span>{{ task.title }}</span>
-      </div>
+<div class="tasks-page p-4">
+  <div class="task-list bg-white dark:bg-gray-800 rounded-lg shadow">
+    <div
+      *ngFor="let task of tasks"
+      class="task-item flex items-center p-4 border-b border-gray-200 dark:border-gray-700"
+    >
+      <input
+        type="checkbox"
+        [checked]="task.completed"
+        class="h-5 w-5 rounded text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700"
+      />
+      <span
+        class="ml-4"
+        [ngClass]="{ 'line-through text-gray-500': task.completed }"
+        >{{ task.title }}</span
+      >
     </div>
   </div>
 </div>

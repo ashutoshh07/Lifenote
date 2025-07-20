@@ -1,46 +1,45 @@
-<div class="sidebar" [class.collapsed]="layoutService.sidebarCollapsed()">
-  <div  [ngClass]="{'!justify-center': layoutService.sidebarCollapsed() }" class="sidebar-header">
+<div class="sidebar bg-card text-card-foreground border-border" [class.collapsed]="layoutService.sidebarCollapsed()">
+  <div class="sidebar-header" [ngClass]="{ '!justify-center': layoutService.sidebarCollapsed() }">
     <div class="logo">
       <a routerLink="/">
         <h1 *ngIf="!layoutService.sidebarCollapsed()">Lifenote</h1>
       </a>
     </div>
-    <button class="collapse-button" (click)="layoutService.toggleSidebarCollapsed()">
+    <button class="collapse-button text-foreground" (click)="layoutService.toggleSidebarCollapsed()">
       <lucide-icon name="panel-left-close" *ngIf="!layoutService.sidebarCollapsed()"></lucide-icon>
       <lucide-icon name="panel-right-close" *ngIf="layoutService.sidebarCollapsed()"></lucide-icon>
     </button>
   </div>
-  <nav>
-    <ul>
+  <nav class="flex-grow">
+    <ul class="list-none p-0 m-0">
       <li>
-        <a routerLink="/tasks" routerLinkActive="active">
+        <a routerLink="/tasks" routerLinkActive="active"
+          class="flex items-center column-gap-2 p-3 mb-2 rounded-md text-muted-foreground font-medium transition-colors hover:bg-accent">
           <i-lucide name="check"></i-lucide>
-          <span class="mb-0.5" *ngIf="!(layoutService.sidebarCollapsed())">Tasks</span>
+          <span class="mb-0.5" *ngIf="!layoutService.sidebarCollapsed()">Tasks</span>
         </a>
       </li>
       <li>
-        <a routerLink="/pomodoro" routerLinkActive="active">
+        <a routerLink="/pomodoro" routerLinkActive="active"
+          class="flex items-center column-gap-2 p-3 mb-2 rounded-md text-muted-foreground font-medium transition-colors hover:bg-accent">
           <i-lucide name="timer"></i-lucide>
-          <span class="mb-0.5" *ngIf="!(layoutService.sidebarCollapsed())">Pomodoro</span>
+          <span class="mb-0.5" *ngIf="!layoutService.sidebarCollapsed()">Pomodoro</span>
         </a>
       </li>
       <li>
-        <a routerLink="/habits" routerLinkActive="active">
+        <a routerLink="/habits" routerLinkActive="active"
+          class="flex items-center column-gap-2 p-3 mb-2 rounded-md text-muted-foreground font-medium transition-colors hover:bg-accent">
           <i-lucide name="repeat-2"></i-lucide>
-          <span class="mb-0.5" *ngIf="!(layoutService.sidebarCollapsed())">Habits</span>
+          <span class="mb-0.5" *ngIf="!layoutService.sidebarCollapsed()">Habits</span>
         </a>
       </li>
       <li>
-        <a routerLink="/settings" routerLinkActive="active">
+        <a routerLink="/settings" routerLinkActive="active"
+          class="flex items-center column-gap-2 p-3 mb-2 rounded-md text-muted-foreground font-medium transition-colors hover:bg-accent">
           <i-lucide name="settings"></i-lucide>
-          <span class="mb-0.5" *ngIf="!(layoutService.sidebarCollapsed())">Settings</span>
+          <span class="mb-0.5" *ngIf="!layoutService.sidebarCollapsed()">Settings</span>
         </a>
       </li>
     </ul>
   </nav>
-  <div class="collapse-button-container">
-    <button (click)="layoutService.toggleSidebarCollapsed()">
-      <i [class]="(layoutService.sidebarCollapsed()) ? 'icon-arrow-right' : 'icon-arrow-left'"></i>
-    </button>
-  </div>
 </div>

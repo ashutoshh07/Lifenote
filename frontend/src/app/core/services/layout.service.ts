@@ -17,7 +17,7 @@ export class LayoutService {
   
   // Navigation state
   private sidebarOpenSignal = signal<boolean>(false);
-  private sidebarCollapsedSignal = signal<boolean>(false);
+  private sidebarCollapsedSignal = signal<boolean>(true);
   private navigationItems = signal<NavigationItem[]>([
     {
       id: 'tasks',
