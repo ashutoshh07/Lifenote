@@ -1,11 +1,11 @@
-<div class="flex h-screen bg-background">
-  <app-desktop-sidebar></app-desktop-sidebar>
+<div class="app-layout flex h-screen bg-background">
+  <app-desktop-sidebar class="desktop-only"></app-desktop-sidebar>
 
   <div class="flex flex-col flex-1 overflow-y-auto">
-    <main class="flex-1 p-4 sm:p-6">
+    <main class="main-content flex-1 p-4 sm:p-6">
       <router-outlet></router-outlet>
     </main>
   </div>
 
-  <app-mobile-bottom-nav></app-mobile-bottom-nav>
+  <app-mobile-bottom-nav class="mobile-only"></app-mobile-bottom-nav>
 </div>

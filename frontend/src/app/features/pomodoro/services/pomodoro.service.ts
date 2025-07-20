@@ -9,7 +9,7 @@ export type PomodoroType = 'pomodoro' | 'short-break' | 'long-break';
 export class PomodoroService {
   private timer$: Subscription | null = null;
   
-  private type: PomodoroType = 'pomodoro';
+  type: PomodoroType = 'pomodoro';
   private running = false;
 
   private minutes = 25;
