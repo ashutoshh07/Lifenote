@@ -24,10 +24,4 @@ public partial class UserInfo
     public DateTime? UpdatedAt { get; set; }
 
     public bool? IsActive { get; set; }
-
-    public virtual ICollection<Habit> Habits { get; set; } = new List<Habit>();
-
-    public virtual ICollection<Note> Notes { get; set; } = new List<Note>();
-
-    public virtual ICollection<Timer> Timers { get; set; } = new List<Timer>();
 }

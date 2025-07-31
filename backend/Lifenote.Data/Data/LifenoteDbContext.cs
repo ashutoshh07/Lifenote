@@ -16,27 +16,49 @@ public partial class LifenoteDbContext : DbContext
     {
     }
 
+    public virtual DbSet<FocusSession> FocusSessions { get; set; }
+
     public virtual DbSet<Habit> Habits { get; set; }
 
     public virtual DbSet<Note> Notes { get; set; }
 
-    public virtual DbSet<Timer> Timers { get; set; }
-
     public virtual DbSet<UserInfo> UserInfos { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=lifenote;Username=postgres;Password=post123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<FocusSession>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("FocusSession_pkey");
+
+            entity.HasIndex(e => new { e.UserId, e.IsCompleted }, "idx_focussessions_completed");
+
+            entity.HasIndex(e => e.Id, "idx_focussessions_noteid").HasFilter("(\"Id\" IS NOT NULL)");
+
+            entity.HasIndex(e => new { e.UserId, e.SessionType }, "idx_focussessions_sessiontype");
+
+            entity.HasIndex(e => e.StartTime, "idx_focussessions_starttime");
+
+            entity.HasIndex(e => new { e.UserId, e.StartTime }, "idx_focussessions_user_date");
+
+            entity.HasIndex(e => e.UserId, "idx_focussessions_userid");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('"FocusSession_Id_seq"'::regclass)");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.IsCompleted).HasDefaultValue(false);
+            entity.Property(e => e.SessionType).HasMaxLength(20);
+        });
+
         modelBuilder.Entity<Habit>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Habits_pkey");
 
-            entity.HasIndex(e => e.IsActive, "IX_Habits_IsActive");
+            entity.HasIndex(e => new { e.UserId, e.IsActive }, "idx_habits_active").HasFilter("(\"IsActive\" = true)");
 
-            entity.HasIndex(e => e.UserId, "IX_Habits_UserId");
+            entity.HasIndex(e => e.CreatedAt, "idx_habits_created");
+
+            entity.HasIndex(e => new { e.UserId, e.Frequency }, "idx_habits_frequency");
+
+            entity.HasIndex(e => e.UserId, "idx_habits_userid");
 
             entity.Property(e => e.Color)
                 .HasMaxLength(7)
@@ -49,10 +71,6 @@ public partial class LifenoteDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.TargetCount).HasDefaultValue(1);
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Habits)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("Habits_UserId_fkey");
         });
 
         modelBuilder.Entity<Note>(entity =>
@@ -61,11 +79,15 @@ public partial class LifenoteDbContext : DbContext
 
             entity.ToTable("Note");
 
-            entity.HasIndex(e => e.Category, "IX_Note_Category");
+            entity.HasIndex(e => new { e.UserId, e.IsArchived }, "idx_note_archived");
 
-            entity.HasIndex(e => e.CreatedAt, "IX_Note_CreatedAt");
+            entity.HasIndex(e => e.Category, "idx_note_category");
 
-            entity.HasIndex(e => e.UserId, "IX_Note_UserId");
+            entity.HasIndex(e => new { e.UserId, e.IsPinned }, "idx_note_pinned").HasFilter("(\"IsPinned\" = true)");
+
+            entity.HasIndex(e => e.UserId, "idx_note_userid");
+
+            entity.HasIndex(e => new { e.UserId, e.CreatedAt }, "idx_note_userid_created");
 
             entity.Property(e => e.Category).HasMaxLength(50);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -73,31 +95,6 @@ public partial class LifenoteDbContext : DbContext
             entity.Property(e => e.IsPinned).HasDefaultValue(false);
             entity.Property(e => e.Title).HasMaxLength(200);
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Notes)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("Note_UserId_fkey");
-        });
-
-        modelBuilder.Entity<Timer>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("Timer_pkey");
-
-            entity.ToTable("Timer");
-
-            entity.HasIndex(e => e.SessionType, "IX_Timer_SessionType");
-
-            entity.HasIndex(e => e.StartTime, "IX_Timer_StartTime");
-
-            entity.HasIndex(e => e.UserId, "IX_Timer_UserId");
-
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            entity.Property(e => e.IsCompleted).HasDefaultValue(false);
-            entity.Property(e => e.SessionType).HasMaxLength(20);
-
-            entity.HasOne(d => d.User).WithMany(p => p.Timers)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("Timer_UserId_fkey");
         });
 
         modelBuilder.Entity<UserInfo>(entity =>
@@ -109,6 +106,12 @@ public partial class LifenoteDbContext : DbContext
             entity.HasIndex(e => e.Email, "UserInfo_Email_key").IsUnique();
 
             entity.HasIndex(e => e.Username, "UserInfo_Username_key").IsUnique();
+
+            entity.HasIndex(e => e.IsActive, "idx_userinfo_active");
+
+            entity.HasIndex(e => e.Email, "idx_userinfo_email");
+
+            entity.HasIndex(e => e.Username, "idx_userinfo_username");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.Email).HasMaxLength(255);

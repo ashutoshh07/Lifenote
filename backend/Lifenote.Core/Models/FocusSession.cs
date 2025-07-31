@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Lifenote.Core.Models;
 
-public partial class Timer
+public partial class FocusSession
 {
     public int Id { get; set; }
 
@@ -24,6 +24,4 @@ public partial class Timer
     public string? Notes { get; set; }
 
     public DateTime? CreatedAt { get; set; }
-
-    public virtual UserInfo User { get; set; } = null!;
 }
