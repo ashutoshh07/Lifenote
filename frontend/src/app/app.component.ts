@@ -5,6 +5,7 @@ import { DesktopSidebarComponent } from './layout/navigation/desktop-sidebar/des
 import { MobileBottomNavComponent } from './layout/navigation/mobile-bottom-nav/mobile-bottom-nav.component';
 import { LayoutService } from './core/services/layout.service';
 import { ThemeService } from './core/services/theme.service';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ import { ThemeService } from './core/services/theme.service';
 })
 export class AppComponent {
   layoutService = inject(LayoutService);
+  authService = inject(AuthService);
 
   constructor(private themeService: ThemeService) {
     this.themeService.initializeTheme();

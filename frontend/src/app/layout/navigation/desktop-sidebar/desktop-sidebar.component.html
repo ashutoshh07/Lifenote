@@ -13,10 +13,10 @@
   <nav class="flex-grow">
     <ul class="list-none p-0 m-0">
       <li>
-        <a routerLink="/tasks" routerLinkActive="active"
+        <a routerLink="/notes" routerLinkActive="active"
           class="flex items-center column-gap-2 p-3 mb-2 rounded-md text-muted-foreground font-medium transition-colors hover:bg-accent">
-          <i-lucide name="check"></i-lucide>
-          <span class="mb-0.5" *ngIf="!layoutService.sidebarCollapsed()">Tasks</span>
+          <i class="fa-solid fa-note-sticky !mr-0"></i>
+          <span class="mb-0.5" *ngIf="!layoutService.sidebarCollapsed()">Notes</span>
         </a>
       </li>
       <li>
