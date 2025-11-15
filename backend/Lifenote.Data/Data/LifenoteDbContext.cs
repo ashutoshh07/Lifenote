@@ -42,7 +42,7 @@ public partial class LifenoteDbContext : DbContext
 
             entity.HasIndex(e => e.UserId, "idx_focussessions_userid");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("nextval('"FocusSession_Id_seq"'::regclass)");
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"FocusSession_Id_seq\"'::regclass)");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.IsCompleted).HasDefaultValue(false);
             entity.Property(e => e.SessionType).HasMaxLength(20);

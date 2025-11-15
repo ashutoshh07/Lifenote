@@ -11,7 +11,7 @@ namespace Lifenote.API.Controllers
     {
         private readonly INoteService _noteService;
 
-        public NotesController(INoteService noteService)
+        public NoteController(INoteService noteService)
         {
             _noteService = noteService;
         }
