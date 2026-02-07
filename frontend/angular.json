@@ -33,16 +33,13 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/prismjs/themes/prism-okaidia.css",
+              "node_modules/prismjs/themes/prism-tomorrow.css",
               "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
-              "node_modules/prismjs/plugins/command-line/prism-command-line.css"
-
+              "node_modules/prismjs/plugins/command-line/prism-command-line.css",
+              "node_modules/prismjs/plugins/toolbar/prism-toolbar.css"
             ],
             "scripts": [
-              "node_modules/prismjs/prism.js",
-              "node_modules/prismjs/components/prism-csharp.min.js",
-              "node_modules/prismjs/components/prism-css.min.js",
-              "node_modules/prismjs/plugins/command-line/prism-command-line.js"
+              "node_modules/clipboard/dist/clipboard.min.js"
             ]
           },
           "configurations": {
@@ -105,14 +102,15 @@
                 "input": "public"
               }
             ],
-           "styles": [
+            "styles": [
               "src/styles.scss",
-              "node_modules/prismjs/themes/prism-okaidia.css",
+              "node_modules/prismjs/themes/prism-tomorrow.css",
               "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
-              "node_modules/prismjs/plugins/command-line/prism-command-line.css"
-
+              "node_modules/prismjs/plugins/command-line/prism-command-line.css",
+              "node_modules/prismjs/plugins/toolbar/prism-toolbar.css"
             ],
             "scripts": [
+              "node_modules/clipboard/dist/clipboard.min.js",
               "node_modules/prismjs/prism.js",
               "node_modules/prismjs/components/prism-csharp.min.js",
               "node_modules/prismjs/components/prism-css.min.js",

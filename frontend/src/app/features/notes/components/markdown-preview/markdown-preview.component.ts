@@ -3,17 +3,18 @@ import { marked } from 'marked';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
+import { CopyButtonComponent } from '../copy-button/copy-button.component';
 
 @Component({
   selector: 'app-markdown-preview',
-  imports: [CommonModule, MarkdownModule],
+  imports: [CommonModule, MarkdownModule, CopyButtonComponent],
   templateUrl: './markdown-preview.component.html',
   styleUrl: './markdown-preview.component.scss',
 })
 export class MarkdownPreviewComponent {
-   @Input() content: string = '';
-
-   renderedContent: SafeHtml = '';
+  @Input() content: string = '';
+  readonly clipboardButton = CopyButtonComponent;
+  renderedContent: SafeHtml = '';
 
   constructor(private sanitizer: DomSanitizer) {
     // Configure marked options
