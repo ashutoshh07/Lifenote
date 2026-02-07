@@ -2,9 +2,11 @@
 using Lifenote.Core.Interfaces;
 using Lifenote.Core.Models;
 using Lifenote.Core.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lifenote.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class NoteController : ControllerBase
