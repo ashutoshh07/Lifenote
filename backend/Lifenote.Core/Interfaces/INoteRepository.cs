@@ -6,6 +6,9 @@ namespace Lifenote.Core.Interfaces
     {
         Task<IEnumerable<Note>> GetAllAsync(int userId);
         Task<Note?> GetByIdAsync(int id);
+        Task AddAsync(Note note);
+        void Update(Note note);
+        Task RemoveAsync(int id);
         Task<Note> CreateAsync(Note note);
         Task<Note> UpdateAsync(Note note);
         Task<bool> DeleteAsync(int id);

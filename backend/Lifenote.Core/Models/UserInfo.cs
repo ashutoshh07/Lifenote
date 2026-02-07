@@ -15,7 +15,7 @@ public partial class UserInfo
 
     public string Username { get; set; } = null!;
 
-    public DateOnly? DateOfBirth { get; set; }
+    public DateTime? DateOfBirth { get; set; }
 
     public string? ProfilePicture { get; set; }
 

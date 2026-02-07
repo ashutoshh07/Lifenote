@@ -1,6 +1,4 @@
-﻿using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
-using Lifenote.Core.Interfaces;
+﻿using Lifenote.Core.Interfaces;
 using Lifenote.Data.Data;
 using Lifenote.Data.Repositories;
 using Lifenote.Data.Services;
@@ -45,12 +43,23 @@ builder.Services.AddDbContext<LifenoteDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add Repositories and Services
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<INoteService, NoteService>();
+builder.Services.AddScoped<IUserInfoRepository, UserInfoRepository>();
+builder.Services.AddScoped<IUserInfoService, UserInfoService>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
+    {
+        Title = "Lifenote.API v1",
+        Version = "v1"
+    });
+});
 
 var app = builder.Build();
 

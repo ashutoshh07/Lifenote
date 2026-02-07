@@ -33,7 +33,6 @@ namespace Lifenote.Data.Repositories
             note.UpdatedAt = DateTime.UtcNow;
 
             _context.Notes.Add(note);
-            await _context.SaveChangesAsync();
             return note;
         }
 
@@ -42,7 +41,6 @@ namespace Lifenote.Data.Repositories
             note.UpdatedAt = DateTime.UtcNow;
 
             _context.Entry(note).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
             return note;
         }
 
@@ -52,7 +50,6 @@ namespace Lifenote.Data.Repositories
             if (note == null) return false;
 
             _context.Notes.Remove(note);
-            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -86,6 +83,28 @@ namespace Lifenote.Data.Repositories
         {
             return await _context.Notes
                 .AnyAsync(n => n.Id == id && n.UserId == userId);
+        }
+
+        public async Task AddAsync(Note note)
+        {
+            note.CreatedAt = DateTime.UtcNow;
+            note.UpdatedAt = DateTime.UtcNow;
+            await _context.Notes.AddAsync(note);
+        }
+
+        public void Update(Note note)
+        {
+            note.UpdatedAt = DateTime.UtcNow;
+            _context.Entry(note).State = EntityState.Modified;
+        }
+
+        public async Task RemoveAsync(int id)
+        {
+            var note = await _context.Notes.FindAsync(id);
+            if (note != null)
+            {
+                _context.Notes.Remove(note);
+            }
         }
     }
 }
