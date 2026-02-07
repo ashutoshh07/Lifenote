@@ -24,4 +24,14 @@ public partial class UserInfo
     public DateTime? UpdatedAt { get; set; }
 
     public bool? IsActive { get; set; }
+
+    public string AuthProviderId { get; set; } = null!;
+
+    public string? Bio { get; set; }
+
+    public string? Theme { get; set; }
+
+    public DateTime? LastLoginAt { get; set; }
+
+    public DateTime? DeletedAt { get; set; }
 }

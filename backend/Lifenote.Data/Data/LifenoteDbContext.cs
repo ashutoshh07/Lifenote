@@ -107,21 +107,30 @@ public partial class LifenoteDbContext : DbContext
 
             entity.ToTable("UserInfo");
 
+            entity.HasIndex(e => e.AuthProviderId, "UserInfo_AuthProviderId_key").IsUnique();
+
             entity.HasIndex(e => e.Email, "UserInfo_Email_key").IsUnique();
 
             entity.HasIndex(e => e.Username, "UserInfo_Username_key").IsUnique();
 
             entity.HasIndex(e => e.IsActive, "idx_userinfo_active");
 
+            entity.HasIndex(e => e.AuthProviderId, "idx_userinfo_authproviderid");
+
             entity.HasIndex(e => e.Email, "idx_userinfo_email");
 
             entity.HasIndex(e => e.Username, "idx_userinfo_username");
 
+            entity.Property(e => e.AuthProviderId).HasMaxLength(128);
+            entity.Property(e => e.Bio).HasMaxLength(500);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FirstName).HasMaxLength(100);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.LastName).HasMaxLength(100);
+            entity.Property(e => e.Theme)
+                .HasMaxLength(20)
+                .HasDefaultValueSql("'light'::character varying");
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.Username).HasMaxLength(50);
         });
