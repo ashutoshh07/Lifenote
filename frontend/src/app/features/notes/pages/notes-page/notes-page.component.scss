@@ -148,7 +148,7 @@
     border: none;
     outline: none;
     background: transparent;
-    color: var(--text-primary, #111827);
+    // color: var(--text-primary, #111827);
     margin-bottom: 1.5rem;
     padding: 0.5rem 0;
     
@@ -182,7 +182,7 @@
     resize: vertical; // Allow manual resize
     font-size: 0.95rem;
     line-height: 1.6;
-    color: var(--text-primary, #374151);
+    // color: var(--text-primary, #374151);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     
     &::placeholder {

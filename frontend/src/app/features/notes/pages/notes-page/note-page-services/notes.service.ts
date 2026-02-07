@@ -12,7 +12,14 @@ export class NotesService {
   private apiUrl = `${environment.apiHost}/Note`;
   
   // Signals for reactive state
-  notes = signal<INote[]>([]);
+  notes = signal<INote[]>([
+    {
+      content: 'jjj',
+      id: 2,
+      title: 'ggg',
+      userId: 2
+    }
+  ]);
   searchTerm = signal<string>('');
   isLoading = signal<boolean>(false);
 

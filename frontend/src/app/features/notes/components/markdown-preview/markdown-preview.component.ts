@@ -1,40 +1,41 @@
-import { Component, effect, ElementRef, inject, input } from '@angular/core';
+import { Component, Input, SecurityContext, SimpleChanges } from '@angular/core';
 import { marked } from 'marked';
-import hljs from 'highlight.js';
+import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-markdown-preview',
-  imports: [],
+  imports: [CommonModule, MarkdownModule],
   templateUrl: './markdown-preview.component.html',
   styleUrl: './markdown-preview.component.scss',
 })
 export class MarkdownPreviewComponent {
-  content = input.required<string>();
-  private el = inject(ElementRef);
+   @Input() content: string = '';
 
-  constructor() {
-    // Basic marked configuration
+   renderedContent: SafeHtml = '';
+
+  constructor(private sanitizer: DomSanitizer) {
+    // Configure marked options
     marked.setOptions({
-      breaks: true,
-      gfm: true,
-      pedantic: false
+      breaks: true, // Convert \n to <br>
+      gfm: true, // GitHub Flavored Markdown
     });
+  }
 
-    // Render and highlight
-    effect(() => {
-      const markdown = this.content();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['content']) {
+      this.renderMarkdown();
+    }
+  }
 
-      // Parse markdown to HTML
-      const html = marked.parse(markdown) as string;
+  private renderMarkdown(): void {
+    if (!this.content) {
+      this.renderedContent = '';
+      return;
+    }
 
-      // Set HTML
-      const container = this.el.nativeElement.querySelector('.markdown-body');
-      container.innerHTML = html;
-
-      // Highlight all code blocks after rendering
-      container.querySelectorAll('pre code').forEach((block: any) => {
-        hljs.highlightElement(block);
-      });
-    });
+    const html = marked.parse(this.content) as string;
+    this.renderedContent = this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
   }
 }
