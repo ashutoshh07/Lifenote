@@ -53,9 +53,11 @@ export class NotesService {
     const userId = sessionStorage.getItem('userId');
     return this.http.put<INote>(`${this.apiUrl}/${userId}/${id}`, note).pipe(
       switchMap((notes) => of(notes)),
-      tap(updatedNote => {
+      tap(updatedNote => {        
         this.notes.update(notes => 
-          notes.map(n => n.id === id ? updatedNote : n)
+          notes.map(n => n.id === id ? { ...updatedNote, content: updatedNote.content, id, title: updatedNote.title,
+            isPinned: updatedNote.isPinned
+           } : n)
         );
       })
     );

@@ -233,7 +233,8 @@ export class NotesPageComponent implements OnInit {
 
     const noteData = {
       title: title || 'Untitled',
-      content: content
+      content: content,
+      isPinned: this.editingNote()!.id ? this.editingNote()?.isPinned : false 
     };
 
     this.notesService.updateNote(this.editingNote()!.id, noteData).subscribe({
