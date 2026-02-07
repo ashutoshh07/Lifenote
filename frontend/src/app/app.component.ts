@@ -31,6 +31,7 @@ export class AppComponent {
     const idToken = localStorage.getItem('toxin');
     if (idToken) {
       this.authService.isAuthenticated.set(true);
+      this.authService.getCurrentUserDetails().subscribe();
     }
   }
 }

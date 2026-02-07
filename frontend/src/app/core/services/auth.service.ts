@@ -51,12 +51,12 @@ export class AuthService {
       username: username,
     };
 
-    return this.http.post(`${this.apiBase}/user`, createUserPayload);
+    return this.http.post(`${this.apiBase}/userinfo`, createUserPayload);
   }
 
   checkUsernameAvailability$(username: string): Observable<boolean> {
     return this.http.get<{ available: boolean }>(
-      `${this.apiBase}/user/check-username/${username}`
+      `${this.apiBase}/userinfo/check-username/${username}`
     ).pipe(
       map(res => res.available)
     );
@@ -76,11 +76,14 @@ export class AuthService {
         this.isAuthenticated.set(true);
       }),
       switchMap(() => this.createBackendUser$(username)),
-      switchMap(() => this.http.get(`${this.apiBase}/user/me`)),
       tap(() => {
         this.router.navigate(['/notes']);
       })
     );
+  }
+
+  getCurrentUserDetails() {
+    return this.http.get(`${this.apiBase}/userinfo/me`);
   }
 
   login(email: string, password: string): void {
@@ -91,7 +94,7 @@ export class AuthService {
         this.isAuthenticated.set(true);
       }),
       // optional: fetch profile if needed
-      switchMap(() => this.http.get(`${this.apiBase}/user/me`)),
+      switchMap(() => this.getCurrentUserDetails()),
       tap(() => {
         this.router.navigate(['/notes']);
       })

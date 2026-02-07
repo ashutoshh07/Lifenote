@@ -4,7 +4,7 @@
   width: 250px;
   background-color: var(--card);
   height: 100vh;
-  padding: 1.5rem;
+  padding: 0.5rem;
   transition: width 0.3s ease;
 
   &.collapsed {
@@ -57,7 +57,7 @@
           column-gap: 7px;
           padding: 0.75rem 1rem;
           margin-bottom: 7px;
-          border-radius: 0.5rem;
+          border-radius: 100px;
           text-decoration: none;
           // color: var(--muted-foreground);
           font-weight: 500;

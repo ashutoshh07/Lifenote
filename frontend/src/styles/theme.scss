@@ -7,7 +7,7 @@
     --card-foreground: #0B192C;
     --popover: #ffffff;
     --popover-foreground: #0B192C;
-    --primary: #FF6500; /* Bright Orange */
+    --primary: #40128B; /* Bright Orange */
     --primary-foreground: #ffffff; /* White text on orange */
     --secondary: #1E3E62; /* Dark Slate Blue */
     --secondary-foreground: #ffffff;
@@ -19,7 +19,6 @@
     --destructive-foreground: #ffffff;
     --border: #e5e7eb;
     --input: #e5e7eb;
-    --ring: #FF6500;
   }
 
   .dark {
@@ -30,7 +29,7 @@
     --card-foreground: #f9fafb;
     --popover: #0B192C;
     --popover-foreground: #f9fafb;
-    --primary: #FF6500; /* Bright Orange */
+    --primary: #F5F5F5; /* Bright Orange */
     --primary-foreground: #000000; /* Black text on orange for contrast */
     --secondary: #1E3E62; /* Dark Slate Blue */
     --secondary-foreground: #f9fafb;
@@ -42,6 +41,5 @@
     --destructive-foreground: #000000;
     --border: #1E3E62;
     --input: #1E3E62;
-    --ring: #FF6500;
   }
 }
