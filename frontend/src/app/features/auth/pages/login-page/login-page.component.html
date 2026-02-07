@@ -65,6 +65,14 @@
               placeholder="Email address">
           </div>
           <div>
+            <label for="username">Username</label>
+            <input id="username" type="text" class="form-control" formControlName="username" placeholder="Choose a username" />
+
+            @if (signupForm.get('username')?.touched && signupForm.get('username')?.invalid) {
+              <div class="error">Username is required and must be at least 3 characters.</div>
+            }
+          </div>
+          <div>
             <label for="signup-password" class="sr-only">Password</label>
             <input id="signup-password" formControlName="password" name="password" type="password" autocomplete="new-password" required
               class="relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 sm:text-sm"

@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
 
@@ -14,7 +13,6 @@ import { AuthService } from '../../../../core/services/auth.service';
 export class LoginPageComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-  private router = inject(Router);
 
   isSignupMode = false;
 
@@ -24,6 +22,7 @@ export class LoginPageComponent {
   });
 
   signupForm = this.fb.group({
+    username: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', Validators.required]
@@ -42,22 +41,30 @@ export class LoginPageComponent {
   async login() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      const user = await this.authService.login(email!, password!);
-      console.log(user);
+      this.authService.login(email!, password!);
     }
   }
 
   async signup() {
     if (this.signupForm.valid) {
-      const { email, password, confirmPassword } = this.signupForm.value;
+      const { email, password, confirmPassword, username } = this.signupForm.value;
+      this.errorMessage = '';
 
       if (password !== confirmPassword) {
         this.errorMessage = 'Passwords do not match';
         return;
       }
 
-      const user = await this.authService.signUp(email!, password!);
-      console.log(user);
+      this.authService.signUp(email!, password!, username!).subscribe({
+        next: (user) => console.log('User created:', user),
+        error: (err) => {
+          if (err.message === 'USERNAME_TAKEN') {
+            this.errorMessage = 'Username is already taken';
+          } else {
+            this.errorMessage = this.getErrorMessage(err?.code ?? '');
+          }
+        }
+      });
     }
   }
 
@@ -67,10 +74,6 @@ export class LoginPageComponent {
         return 'This email is already registered';
       case 'auth/invalid-email':
         return 'Invalid email address';
-      case 'auth/user-not-found':
-        return 'No account found with this email';
-      case 'auth/wrong-password':
-        return 'Incorrect password';
       case 'auth/weak-password':
         return 'Password should be at least 6 characters';
       default:

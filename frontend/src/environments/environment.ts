@@ -8,5 +8,6 @@ export const environment = {
     authDomain: "lifenotes-b5261.firebaseapp.com",
     messagingSenderId: "396638903554",
     measurementId: "G-JESXSTEB19"
-  }
+  },
+  apiHost: "https://localhost:44333/api"
 }
