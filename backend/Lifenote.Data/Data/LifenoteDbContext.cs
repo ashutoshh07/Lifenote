@@ -24,6 +24,10 @@ public partial class LifenoteDbContext : DbContext
 
     public virtual DbSet<UserInfo> UserInfos { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=lifenote;Username=postgres;Password=post123");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FocusSession>(entity =>
@@ -42,7 +46,7 @@ public partial class LifenoteDbContext : DbContext
 
             entity.HasIndex(e => e.UserId, "idx_focussessions_userid");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("nextval('"FocusSession_Id_seq"'::regclass)");
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"FocusSession_Id_seq\"'::regclass)");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.IsCompleted).HasDefaultValue(false);
             entity.Property(e => e.SessionType).HasMaxLength(20);
