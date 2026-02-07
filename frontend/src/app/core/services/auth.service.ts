@@ -4,7 +4,7 @@ import { Auth, user, createUserWithEmailAndPassword, signInWithEmailAndPassword,
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { from, Observable, switchMap, tap, map } from 'rxjs';
+import { from, Observable, switchMap, tap, map, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class AuthService {
 
   // Firebase user as signal
   currentUser = toSignal(user(this.auth), { initialValue: null });
-  currentUserDetails = signal({});
+  currentUserDetails = signal({} as any);
 
   // Convenience computed
   readonly isLoggedIn = computed(() => !!this.currentUser());
@@ -83,7 +83,13 @@ export class AuthService {
   }
 
   getCurrentUserDetails() {
-    return this.http.get(`${this.apiBase}/userinfo/me`);
+    return this.http.get(`${this.apiBase}/userinfo/me`).pipe(
+      switchMap((user: any) => {
+        this.currentUserDetails.set(user);
+        sessionStorage.setItem('userId', user['id']);
+        return of({ ...user, isLoaded: true });
+      })
+    );
   }
 
   login(email: string, password: string): void {

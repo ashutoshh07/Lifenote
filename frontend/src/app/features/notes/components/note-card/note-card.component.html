@@ -1,5 +1,5 @@
 <div class="group bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 
-             hover:shadow-lg transition-all duration-200 cursor-pointer p-4 relative" (click)="onCardClick()">
+             hover:shadow-lg transition-all duration-200 cursor-pointer p-4 relative" (click)="onCardClick($event)">
 
     <!-- Pin Icon -->
     @if (note().isPinned) {

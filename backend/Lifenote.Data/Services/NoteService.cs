@@ -50,10 +50,16 @@ namespace Lifenote.Data.Services
             if (existingNote == null || existingNote.UserId != note.UserId)
                 throw new UnauthorizedAccessException("Note not found or access denied");
 
-            _unitOfWork.Notes.Update(note);
-            await _unitOfWork.SaveChangesAsync();  // ✅ Single transaction
+            existingNote.Title = note.Title;
+            existingNote.Content = note.Content;
+            existingNote.Category = note.Category;
+            existingNote.IsPinned = note.IsPinned;
+            existingNote.IsArchived = note.IsArchived;
+            existingNote.UpdatedAt = DateTime.UtcNow;
 
-            return note;
+            await _unitOfWork.SaveChangesAsync();
+
+            return existingNote;
         }
 
         public async Task<bool> DeleteNoteAsync(int id, int userId)
