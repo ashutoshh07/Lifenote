@@ -1,0 +1,20 @@
+.add-note-btn {
+    background: var(--primary);
+    color: var(--secondary);
+}
+
+.bg-system-color {
+    background-color: var(--background);
+    border: none;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+}
+    
+@media (min-width: 768px) {
+    .search-bar-input {
+        width: 50%;
+    }
+}
