@@ -110,3 +110,18 @@ body {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// ✅ Make all Material dialogs responsive
+.mat-mdc-dialog-container {
+  @media (max-width: 576px) {
+    max-width: 95vw !important;
+    margin: 16px !important;
+  }
+}
+
+// ✅ Fix dialog content overflow on mobile
+mat-dialog-content {
+  @media (max-width: 576px) {
+    padding: 16px !important;
+  }
+}

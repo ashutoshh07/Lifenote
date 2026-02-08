@@ -63,6 +63,19 @@ mat-dialog-content {
   flex-direction: column;
   gap: 8px;
   margin-bottom: 16px;
+  min-width: 400px;
+  max-width: 500px;
+
+  // ✅ Tablet
+  @media (max-width: 768px) {
+    min-width: 350px;
+  }
+
+  // ✅ Mobile
+  @media (max-width: 576px) {
+    min-width: 90vw;
+    max-width: 90vw;
+  }
 
   .info-row {
     display: flex;
@@ -127,6 +140,7 @@ mat-dialog-actions {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
