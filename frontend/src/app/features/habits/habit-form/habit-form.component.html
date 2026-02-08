@@ -17,58 +17,47 @@
   <mat-dialog-content>
     <form [formGroup]="habitForm">
       
-      <!-- Habit Name -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Habit Name *</mat-label>
+      <!-- Habit Name (Large Title) -->
+      <mat-form-field class="title-field">
         <input 
           matInput 
           formControlName="name"
-          placeholder="e.g., Morning Exercise"
+          placeholder="What's your new habit?"
           maxlength="200">
-        <mat-hint align="end">
-          {{ habitForm.value.name?.length || 0 }}/200
-        </mat-hint>
         <mat-error *ngIf="habitForm.get('name')?.hasError('required')">
-          Habit name is required
+          Name is required
         </mat-error>
       </mat-form-field>
 
-      <!-- Description -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Description (optional)</mat-label>
+      <!-- Description (Clean Area) -->
+      <mat-form-field class="description-field">
         <textarea 
           matInput 
           formControlName="description"
-          placeholder="e.g., 30 minutes cardio workout"
-          rows="3"
-          maxlength="500">
-        </textarea>
-        <mat-hint align="end">
-          {{ habitForm.value.description?.length || 0 }}/500
-        </mat-hint>
+          placeholder="Add a few details (optional)..."
+          rows="2"
+          maxlength="500"></textarea>
       </mat-form-field>
 
-      <!-- Choose Icon -->
       <div class="form-section">
-        <label class="section-label">Choose Icon</label>
-        <div class="icon-grid">
-          <button
+        <span class="section-label">Appearance</span>
+        
+        <!-- Icon Grid -->
+        <div class="icon-grid mb-6">
+          <button 
             *ngFor="let icon of availableIcons"
             type="button"
             class="icon-button"
             [class.selected]="habitForm.value.iconName === icon.name"
             (click)="selectIcon(icon.name)"
             [title]="icon.label">
-            {{ icon.name }}
+            <mat-icon>{{ icon.name }}</mat-icon>
           </button>
         </div>
-      </div>
 
-      <!-- Choose Color -->
-      <div class="form-section">
-        <label class="section-label">Choose Color</label>
+        <!-- Color Grid -->
         <div class="color-grid">
-          <button
+          <button 
             *ngFor="let color of availableColors"
             type="button"
             class="color-button"
@@ -76,86 +65,44 @@
             [class.selected]="habitForm.value.color === color.value"
             (click)="selectColor(color.value)"
             [title]="color.label">
-            <mat-icon *ngIf="habitForm.value.color === color.value">check</mat-icon>
+            <mat-icon>check</mat-icon>
           </button>
         </div>
       </div>
 
-      <!-- Frequency -->
       <div class="form-section">
-        <label class="section-label">Frequency *</label>
-        <mat-radio-group formControlName="frequencyType" class="frequency-group">
-          <mat-radio-button value="Daily">Daily</mat-radio-button>
-          <mat-radio-button value="Weekly">Weekly</mat-radio-button>
-          <mat-radio-button value="Custom">Custom Days</mat-radio-button>
-        </mat-radio-group>
-      </div>
-
-      <!-- Custom Days Selection -->
-      <div class="form-section" *ngIf="isCustomFrequency">
-        <label class="section-label">Select Days (for Custom)</label>
-        <div class="days-grid">
-          <button
-            *ngFor="let day of daysOfWeek"
-            type="button"
-            class="day-button"
-            [class.selected]="day.selected"
-            (click)="toggleDay(day)">
-            {{ day.label }}
-          </button>
+        <span class="section-label">Schedule & Goal</span>
+        
+        <!-- Target Count -->
+        <div class="flex items-center justify-between bg-muted p-4 rounded-xl mb-6">
+          <div class="flex flex-col">
+            <span class="font-bold">Daily Goal</span>
+            <span class="text-xs text-muted-foreground">Times per day</span>
+          </div>
+          <div class="counter">
+            <button 
+              type="button"
+              mat-icon-button
+              (click)="decrementTarget()"
+              [disabled]="habitForm.value.targetCount <= 1">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span class="counter-value">{{ habitForm.value.targetCount }}</span>
+            <button 
+              type="button"
+              mat-icon-button
+              (click)="incrementTarget()"
+              [disabled]="habitForm.value.targetCount >= 10">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
         </div>
       </div>
-
-      <!-- Target Count -->
-      <div class="form-section">
-        <label class="section-label">How many times per day? *</label>
-        <div class="counter">
-          <button 
-            type="button"
-            mat-icon-button 
-            (click)="decrementTarget()"
-            [disabled]="habitForm.value.targetCount <= 1">
-            <mat-icon>remove</mat-icon>
-          </button>
-          <span class="counter-value">{{ habitForm.value.targetCount }}</span>
-          <button 
-            type="button"
-            mat-icon-button 
-            (click)="incrementTarget()"
-            [disabled]="habitForm.value.targetCount >= 10">
-            <mat-icon>add</mat-icon>
-          </button>
-        </div>
-      </div>
-
-      <!-- Start Date -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Start Date</mat-label>
-        <input 
-          matInput 
-          [matDatepicker]="startPicker" 
-          formControlName="startDate">
-        <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
-      </mat-form-field>
-
-      <!-- End Date -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>End Date (optional, for time-bound goals)</mat-label>
-        <input 
-          matInput 
-          [matDatepicker]="endPicker" 
-          formControlName="endDate">
-        <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
-        <mat-hint>Leave empty for ongoing habits</mat-hint>
-      </mat-form-field>
 
     </form>
   </mat-dialog-content>
 
-  <!-- Actions -->
-  <mat-dialog-actions align="end">
+  <mat-dialog-actions>
     <button 
       mat-button 
       (click)="onCancel()"
@@ -173,4 +120,3 @@
     </button>
   </mat-dialog-actions>
 </div>
-
