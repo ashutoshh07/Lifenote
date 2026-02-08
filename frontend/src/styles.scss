@@ -1,8 +1,112 @@
+
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
 @use './tailwind';
-@use './styles/theme.scss';
+@use './styles/theme';
+@use './styles/variables' as *;
+
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$magenta-palette,
+      tertiary: mat.$violet-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+}
+// ===================================
+// Import Tailwind (for existing pages)
+// ===================================
+
+// ===================================
+// Import Angular Material Theme (for new features)
+// ===================================
+
+
+// ===================================
+// Global Styles (affects everything)
+// ===================================
 
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--background);
   color: var(--foreground);
 }
+
+// Smooth theme transitions
+* {
+  transition: background-color 0.2s ease, 
+              color 0.2s ease, 
+              border-color 0.2s ease;
+}
+
+// ===================================
+// Custom Scrollbar
+// ===================================
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 4px;
+  
+  &:hover {
+    background: var(--primary);
+  }
+}
+
+// ===================================
+// Material Design Overrides
+// ===================================
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-snack-bar-container {
+  --mat-snack-bar-button-color: var(--primary);
+  --mdc-snackbar-container-color: var(--card);
+  --mdc-snackbar-supporting-text-color: var(--card-foreground);
+}
+
+// ===================================
+// Focus Styles (Accessibility)
+// ===================================
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

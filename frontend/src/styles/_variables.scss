@@ -1,0 +1,73 @@
+// ===================================
+// Color Palette from your theme
+// ===================================
+
+// Light Mode Colors
+$light-background: #f9fafb;
+$light-foreground: #0B192C;
+$light-card: #ffffff;
+$light-primary: #40128B; // Purple
+$light-secondary: #1E3E62; // Dark Slate Blue
+$light-muted: #e5e7eb;
+$light-border: #e5e7eb;
+
+// Dark Mode Colors
+$dark-background: #10223a;
+$dark-foreground: #f9fafb;
+$dark-card: #0B192C;
+$dark-primary: #F5F5F5;
+$dark-secondary: #1E3E62;
+$dark-muted: #1E3E62;
+$dark-border: #1E3E62;
+
+// Accent Colors
+$success-color: #4CAF50;
+$danger-color: #ef4444;
+$warning-color: #FFC107;
+
+// Habit Tracker Specific
+$streak-active: #FF9800;
+$streak-broken: #9E9E9E;
+$completed: #4CAF50;
+$pending: #9E9E9E;
+
+// Spacing (keep from before)
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// Aliases for legacy styles that expect these names
+$primary-color: $light-primary;
+$text-secondary: #6b7280;
+
+// Border radius
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 16px;
+
+// Breakpoints
+$mobile: 576px;
+$tablet: 768px;
+$desktop: 992px;
+$wide: 1200px;
+
+// Mixins for responsive
+@mixin mobile {
+  @media (max-width: #{$mobile - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: $mobile) and (max-width: #{$tablet - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $tablet) {
+    @content;
+  }
+}

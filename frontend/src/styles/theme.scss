@@ -1,3 +1,144 @@
+@use '@angular/material' as mat;
+@use 'sass:map';
+
+// ===================================
+// Include Material Core Styles
+// ===================================
+@include mat.core();
+
+// ===================================
+// Define Custom Angular Material Palettes
+// ===================================
+
+// Primary - Purple (#40128B)
+$custom-primary-palette: (
+  50: #f3e5f5,
+  100: #e1bee7,
+  200: #ce93d8,
+  300: #ba68c8,
+  400: #ab47bc,
+  500: #40128B, // Your primary purple
+  600: #3a1080,
+  700: #320e70,
+  800: #2a0c60,
+  900: #1f0846,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+// Accent - Dark Slate Blue (#1E3E62)
+$custom-accent-palette: (
+  50: #e8eef5,
+  100: #c5d4e6,
+  200: #9eb8d5,
+  300: #779bc4,
+  400: #5985b8,
+  500: #1E3E62, // Your secondary/accent
+  600: #1a3859,
+  700: #16304f,
+  800: #122845,
+  900: #0a1b33,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+// Warn - Red (#ef4444)
+$custom-warn-palette: (
+  50: #fef2f2,
+  100: #fee2e2,
+  200: #fecaca,
+  300: #fca5a5,
+  400: #f87171,
+  500: #ef4444, // Your destructive color
+  600: #dc2626,
+  700: #b91c1c,
+  800: #991b1b,
+  900: #7f1d1d,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+// Define Material palettes
+$primary: mat.m2-define-palette($custom-primary-palette, 500);
+$accent: mat.m2-define-palette($custom-accent-palette, 500);
+$warn: mat.m2-define-palette($custom-warn-palette, 500);
+
+// ===================================
+// Create Light Theme
+// ===================================
+$light-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+    warn: $warn,
+  ),
+  typography: mat.m2-define-typography-config(
+    $font-family: 'Inter, sans-serif',
+  ),
+  density: 0,
+));
+
+// ===================================
+// Create Dark Theme
+// ===================================
+$dark-theme: mat.m2-define-dark-theme((
+  color: (
+    primary: mat.m2-define-palette($custom-primary-palette, 200), // Lighter for dark mode
+    accent: $accent,
+    warn: mat.m2-define-palette($custom-warn-palette, 400), // Lighter red for dark
+  ),
+  typography: mat.m2-define-typography-config(
+    $font-family: 'Inter, sans-serif',
+  ),
+  density: 0,
+));
+
+// ===================================
+// Apply Material Component Themes
+// ===================================
+
+// Apply light theme by default
+@include mat.all-component-themes($light-theme);
+
+// Apply dark theme when .dark class is present
+.dark {
+  @include mat.all-component-colors($dark-theme);
+}
+
+// ===================================
+// CSS Custom Properties (Your existing variables)
+// ===================================
+
 @layer base {
   :root {
     /* Light Mode using your palette's spirit */
@@ -7,8 +148,8 @@
     --card-foreground: #0B192C;
     --popover: #ffffff;
     --popover-foreground: #0B192C;
-    --primary: #40128B; /* Bright Orange */
-    --primary-foreground: #ffffff; /* White text on orange */
+    --primary: #40128B; /* Purple */
+    --primary-foreground: #ffffff; /* White text on purple */
     --secondary: #1E3E62; /* Dark Slate Blue */
     --secondary-foreground: #ffffff;
     --muted: #e5e7eb; /* Standard light muted gray */
@@ -19,18 +160,26 @@
     --destructive-foreground: #ffffff;
     --border: #e5e7eb;
     --input: #e5e7eb;
+
+    /* Habit Tracker Specific Colors */
+    --streak-active: #FF9800; /* Orange for active streaks */
+    --streak-broken: #9E9E9E; /* Gray for broken streaks */
+    --completed: #4CAF50; /* Green for completed */
+    --pending: #9E9E9E; /* Gray for pending */
+    --success: #4CAF50;
+    --warning: #FFC107;
   }
 
   .dark {
     /* Dark Mode using your palette directly */
-    --background: #10223a; /* Black */
+    --background: #10223a; /* Dark background */
     --foreground: #f9fafb; /* Off-white text */
     --card: #0B192C; /* Very Dark Blue */
     --card-foreground: #f9fafb;
     --popover: #0B192C;
     --popover-foreground: #f9fafb;
-    --primary: #F5F5F5; /* Bright Orange */
-    --primary-foreground: #000000; /* Black text on orange for contrast */
+    --primary: #F5F5F5; /* Light gray for dark mode */
+    --primary-foreground: #000000; /* Black text on light gray for contrast */
     --secondary: #1E3E62; /* Dark Slate Blue */
     --secondary-foreground: #f9fafb;
     --muted: #1E3E62;
@@ -41,5 +190,52 @@
     --destructive-foreground: #000000;
     --border: #1E3E62;
     --input: #1E3E62;
+
+    /* Habit Tracker Specific Colors (Dark Mode) */
+    --streak-active: #FFA726; /* Brighter orange for dark mode */
+    --streak-broken: #757575; /* Lighter gray */
+    --completed: #66BB6A; /* Lighter green */
+    --pending: #757575; /* Lighter gray */
+    --success: #66BB6A;
+    --warning: #FFCA28;
   }
+}
+
+// ===================================
+// Global Material Overrides
+// ===================================
+
+// Smooth transitions for theme switching
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+// Card shadows (light mode)
+.mat-mdc-card {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+.dark .mat-mdc-card {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3) !important;
+}
+
+// Button adjustments
+.mat-mdc-raised-button {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+  }
+}
+
+// Progress bar styling
+.mat-mdc-progress-bar {
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+// Dialog styling
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-color: var(--card);
+  --mdc-dialog-subhead-color: var(--card-foreground);
 }

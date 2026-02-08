@@ -1,0 +1,59 @@
+<div class="check-in-dialog">
+    <!-- Header -->
+    <div class="dialog-header">
+        <h2 mat-dialog-title>
+            <mat-icon class="check-icon">check_circle</mat-icon>
+            Check In: {{ habit.name }}
+        </h2>
+        <button mat-icon-button (click)="onCancel()" [disabled]="submitting">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <!-- Content -->
+    <mat-dialog-content>
+        <div class="congrats-message">
+            <mat-icon class="celebration-icon">celebration</mat-icon>
+            <p>Great job! You're about to complete this habit!</p>
+        </div>
+
+        <div class="check-in-info">
+            <div class="info-row">
+                <mat-icon>calendar_today</mat-icon>
+                <span><strong>Date:</strong> {{ getCurrentDate() }}</span>
+            </div>
+            <div class="info-row">
+                <mat-icon>schedule</mat-icon>
+                <span><strong>Time:</strong> {{ getCurrentTime() }}</span>
+            </div>
+        </div>
+
+        <form [formGroup]="checkInForm">
+            <mat-form-field appearance="outline" class="notes-field">
+                <mat-label>Add Notes (optional)</mat-label>
+                <textarea matInput formControlName="notes" placeholder="How did it go?" rows="4" maxlength="500">
+        </textarea>
+                <mat-hint align="end">
+                    {{ checkInForm.value.notes?.length || 0 }}/500
+                </mat-hint>
+            </mat-form-field>
+        </form>
+
+        <div class="streak-info">
+            <mat-icon class="fire-icon">local_fire_department</mat-icon>
+            <p>After this, your streak will be: <strong>{{ newStreak }} days</strong></p>
+        </div>
+    </mat-dialog-content>
+
+    <!-- Actions -->
+    <mat-dialog-actions align="end">
+        <button mat-button (click)="onCancel()" [disabled]="submitting">
+            Cancel
+        </button>
+        <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="submitting || checkInForm.invalid">
+            <mat-icon *ngIf="!submitting">check</mat-icon>
+            <mat-icon *ngIf="submitting" class="spinner">sync</mat-icon>
+            {{ submitting ? 'Completing...' : 'Complete ✓' }}
+        </button>
+    </mat-dialog-actions>
+</div>

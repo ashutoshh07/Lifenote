@@ -7,7 +7,7 @@ import { CopyButtonComponent } from '../copy-button/copy-button.component';
 
 @Component({
   selector: 'app-markdown-preview',
-  imports: [CommonModule, MarkdownModule, CopyButtonComponent],
+  imports: [CommonModule, MarkdownModule],
   templateUrl: './markdown-preview.component.html',
   styleUrl: './markdown-preview.component.scss',
 })
