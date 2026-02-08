@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Lifenote.Core.Interfaces;
 using Lifenote.Core.Models;
-using Lifenote.Core.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using Lifenote.Core.DTOs.Note;
+using Lifenote.Core.Interfaces;
+using Lifenote.Core.DTOs;
 
 namespace Lifenote.API.Controllers
 {

@@ -20,6 +20,10 @@ public partial class LifenoteDbContext : DbContext
 
     public virtual DbSet<Habit> Habits { get; set; }
 
+    public virtual DbSet<HabitLog> HabitLogs { get; set; }
+
+    public virtual DbSet<HabitStreak> HabitStreaks { get; set; }
+
     public virtual DbSet<Note> Notes { get; set; }
 
     public virtual DbSet<UserInfo> UserInfos { get; set; }
@@ -56,11 +60,13 @@ public partial class LifenoteDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("Habits_pkey");
 
+            entity.HasIndex(e => e.StartDate, "IX_Habits_StartDate");
+
+            entity.HasIndex(e => new { e.UserId, e.IsActive }, "IX_Habits_UserId_IsActive");
+
             entity.HasIndex(e => new { e.UserId, e.IsActive }, "idx_habits_active").HasFilter("(\"IsActive\" = true)");
 
             entity.HasIndex(e => e.CreatedAt, "idx_habits_created");
-
-            entity.HasIndex(e => new { e.UserId, e.Frequency }, "idx_habits_frequency");
 
             entity.HasIndex(e => e.UserId, "idx_habits_userid");
 
@@ -68,13 +74,60 @@ public partial class LifenoteDbContext : DbContext
                 .HasMaxLength(7)
                 .HasDefaultValueSql("'#3498db'::character varying");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            entity.Property(e => e.CurrentStreak).HasDefaultValue(0);
-            entity.Property(e => e.Frequency).HasMaxLength(20);
+            entity.Property(e => e.FrequencyType)
+                .HasMaxLength(20)
+                .HasDefaultValueSql("'Daily'::character varying");
+            entity.Property(e => e.FrequencyValue).HasMaxLength(100);
+            entity.Property(e => e.IconName)
+                .HasMaxLength(50)
+                .HasDefaultValueSql("'fa-check'::character varying");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.LongestStreak).HasDefaultValue(0);
             entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.StartDate).HasDefaultValueSql("CURRENT_DATE");
             entity.Property(e => e.TargetCount).HasDefaultValue(1);
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<HabitLog>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("HabitLogs_pkey");
+
+            entity.HasIndex(e => new { e.HabitId, e.CompletedDate }, "IX_HabitLogs_HabitId_Date");
+
+            entity.HasIndex(e => new { e.UserId, e.CompletedDate }, "IX_HabitLogs_UserId_Date");
+
+            entity.Property(e => e.CompletedAt).HasColumnType("timestamp without time zone");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone");
+            entity.Property(e => e.Notes).HasMaxLength(500);
+
+            entity.HasOne(d => d.Habit).WithMany(p => p.HabitLogs).HasForeignKey(d => d.HabitId);
+
+            entity.HasOne(d => d.User).WithMany(p => p.HabitLogs)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_HabitLogs_Users_UserId");
+        });
+
+        modelBuilder.Entity<HabitStreak>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("HabitStreaks_pkey");
+
+            entity.HasIndex(e => e.HabitId, "IX_HabitStreaks_HabitId_Unique").IsUnique();
+
+            entity.HasIndex(e => e.UserId, "IX_HabitStreaks_UserId");
+
+            entity.Property(e => e.CalculatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone");
+
+            entity.HasOne(d => d.Habit).WithOne(p => p.HabitStreak).HasForeignKey<HabitStreak>(d => d.HabitId);
+
+            entity.HasOne(d => d.User).WithMany(p => p.HabitStreaks)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_HabitStreaks_Users_UserId");
         });
 
         modelBuilder.Entity<Note>(entity =>

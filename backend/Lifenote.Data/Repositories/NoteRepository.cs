@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Lifenote.Core.Interfaces;
 using Lifenote.Core.Models;
 using Lifenote.Data.Data;
+using Lifenote.Core.Interfaces;
 
 namespace Lifenote.Data.Repositories
 {

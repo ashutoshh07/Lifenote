@@ -1,4 +1,5 @@
 ﻿using Lifenote.Core.DTOs;
+using Lifenote.Core.DTOs.UserInfo;
 using Lifenote.Core.Interfaces;
 using Lifenote.Core.Models;
 

@@ -34,4 +34,8 @@ public partial class UserInfo
     public DateTime? LastLoginAt { get; set; }
 
     public DateTime? DeletedAt { get; set; }
+
+    public virtual ICollection<HabitLog> HabitLogs { get; set; } = new List<HabitLog>();
+
+    public virtual ICollection<HabitStreak> HabitStreaks { get; set; } = new List<HabitStreak>();
 }

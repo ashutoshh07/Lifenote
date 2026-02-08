@@ -1,4 +1,5 @@
 ﻿using Lifenote.Core.DTOs;
+using Lifenote.Core.DTOs.UserInfo;
 using Lifenote.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-﻿namespace Lifenote.Core.DTOs
+﻿namespace Lifenote.Core.DTOs.UserInfo
 {
     public class UserProfileResponse
     {
