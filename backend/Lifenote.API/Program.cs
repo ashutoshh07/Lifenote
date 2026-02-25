@@ -42,6 +42,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddDbContext<LifenoteDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 // Add Repositories and Services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();

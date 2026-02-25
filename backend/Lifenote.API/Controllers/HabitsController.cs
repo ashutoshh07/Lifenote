@@ -29,9 +29,16 @@ namespace Lifenote.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<HabitDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<HabitDto>>> GetHabits([FromQuery] bool includeInactive = false)
         {
-            var userId = GetUserId();
-            var habits = await _habitService.GetUserHabitsAsync(userId, includeInactive);
-            return Ok(habits);
+            try
+            {
+                var userId = GetUserId();
+                var habits = await _habitService.GetUserHabitsAsync(userId, includeInactive);
+                return Ok(habits);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
