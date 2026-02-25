@@ -1,122 +1,91 @@
-<div class="habit-form-dialog">
-  <!-- Header -->
-  <div class="dialog-header">
-    <h2 mat-dialog-title>
-      <mat-icon>{{ isEditMode ? 'edit' : 'add_circle' }}</mat-icon>
-      {{ isEditMode ? 'Edit Habit' : 'Create New Habit' }}
-    </h2>
-    <button 
-      mat-icon-button 
-      (click)="onCancel()"
-      [disabled]="submitting">
-      <mat-icon>close</mat-icon>
+<div class="habit-sheet">
+  <div class="sheet-bar">
+    <button type="button" class="bar-close" (click)="onCancel()" [disabled]="submitting" aria-label="Close">
+      <lucide-icon [img]="CloseIcon" size="22"></lucide-icon>
     </button>
+    <span class="bar-title">{{ isEditMode ? 'Edit habit' : 'New habit' }}</span>
+    <span class="bar-spacer"></span>
   </div>
 
-  <!-- Content -->
-  <mat-dialog-content>
-    <form [formGroup]="habitForm">
-      
-      <!-- Habit Name (Large Title) -->
-      <mat-form-field class="title-field">
-        <input 
-          matInput 
+  <form [formGroup]="habitForm" class="sheet-scroll">
+    <div class="sheet-inner">
+      <div class="hero" [style.--c]="habitForm.value.color">
+        <div class="hero-emoji">{{ habitForm.value.iconName }}</div>
+        <div class="hero-bar"></div>
+        <input
+          type="text"
+          class="hero-input"
           formControlName="name"
-          placeholder="What's your new habit?"
-          maxlength="200">
-        <mat-error *ngIf="habitForm.get('name')?.hasError('required')">
-          Name is required
-        </mat-error>
-      </mat-form-field>
+          placeholder="Habit name"
+          maxlength="200"
+          autocomplete="off" />
+        @if (habitForm.get('name')?.invalid && habitForm.get('name')?.touched) {
+          <p class="hero-error">Name is required</p>
+        }
+      </div>
 
-      <!-- Description (Clean Area) -->
-      <mat-form-field class="description-field">
-        <textarea 
-          matInput 
+      <div class="block">
+        <label class="block-label">Description <span>(optional)</span></label>
+        <textarea
+          class="block-input"
           formControlName="description"
-          placeholder="Add a few details (optional)..."
+          placeholder="Add a note..."
           rows="2"
           maxlength="500"></textarea>
-      </mat-form-field>
+      </div>
 
-      <div class="form-section">
-        <span class="section-label">Appearance</span>
-        
-        <!-- Icon Grid -->
-        <div class="icon-grid mb-6">
-          <button 
-            *ngFor="let icon of availableIcons"
-            type="button"
-            class="icon-button"
-            [class.selected]="habitForm.value.iconName === icon.name"
-            (click)="selectIcon(icon.name)"
-            [title]="icon.label">
-            <mat-icon>{{ icon.name }}</mat-icon>
-          </button>
-        </div>
-
-        <!-- Color Grid -->
-        <div class="color-grid">
-          <button 
-            *ngFor="let color of availableColors"
-            type="button"
-            class="color-button"
-            [style.background-color]="color.value"
-            [class.selected]="habitForm.value.color === color.value"
-            (click)="selectColor(color.value)"
-            [title]="color.label">
-            <mat-icon>check</mat-icon>
-          </button>
+      <div class="block">
+        <span class="block-label">Icon</span>
+        <div class="strip icon-strip">
+          @for (icon of availableIcons; track icon.name) {
+            <button
+              type="button"
+              class="strip-btn icon-btn"
+              [class.is-selected]="habitForm.value.iconName === icon.name"
+              (click)="selectIcon(icon.name)"
+              [attr.aria-label]="icon.label">
+              {{ icon.name }}
+            </button>
+          }
         </div>
       </div>
 
-      <div class="form-section">
-        <span class="section-label">Schedule & Goal</span>
-        
-        <!-- Target Count -->
-        <div class="flex items-center justify-between bg-muted p-4 rounded-xl mb-6">
-          <div class="flex flex-col">
-            <span class="font-bold">Daily Goal</span>
-            <span class="text-xs text-muted-foreground">Times per day</span>
-          </div>
-          <div class="counter">
-            <button 
+      <div class="block">
+        <span class="block-label">Color</span>
+        <div class="strip color-strip">
+          @for (color of availableColors; track color.value) {
+            <button
               type="button"
-              mat-icon-button
-              (click)="decrementTarget()"
-              [disabled]="habitForm.value.targetCount <= 1">
-              <mat-icon>remove</mat-icon>
+              class="strip-btn color-btn"
+              [style.background-color]="color.value"
+              [class.is-selected]="habitForm.value.color === color.value"
+              (click)="selectColor(color.value)"
+              [attr.aria-label]="color.label">
+              @if (habitForm.value.color === color.value) {
+                <lucide-icon [img]="CheckIcon" size="16"></lucide-icon>
+              }
             </button>
-            <span class="counter-value">{{ habitForm.value.targetCount }}</span>
-            <button 
-              type="button"
-              mat-icon-button
-              (click)="incrementTarget()"
-              [disabled]="habitForm.value.targetCount >= 10">
-              <mat-icon>add</mat-icon>
-            </button>
-          </div>
+          }
         </div>
       </div>
 
-    </form>
-  </mat-dialog-content>
+      <div class="block goal-block">
+        <span class="block-label">Times per day</span>
+        <div class="goal">
+          <button type="button" class="goal-btn" (click)="decrementTarget()" [disabled]="habitForm.value.targetCount <= 1" aria-label="Decrease">−</button>
+          <span class="goal-num">{{ habitForm.value.targetCount }}</span>
+          <button type="button" class="goal-btn" (click)="incrementTarget()" [disabled]="habitForm.value.targetCount >= 10" aria-label="Increase">+</button>
+        </div>
+      </div>
 
-  <mat-dialog-actions>
-    <button 
-      mat-button 
-      (click)="onCancel()"
-      [disabled]="submitting">
-      Cancel
+      <div class="sheet-end-spacer"></div>
+    </div>
+  </form>
+
+  <div class="sheet-footer">
+    <button type="button" class="primary-btn" (click)="onSubmit()" [disabled]="submitting || habitForm.invalid">
+      {{ submitting ? 'Saving…' : (isEditMode ? 'Save' : 'Create habit') }}
     </button>
-    <button 
-      mat-raised-button 
-      color="primary"
-      (click)="onSubmit()"
-      [disabled]="submitting || habitForm.invalid">
-      <mat-icon *ngIf="!submitting">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
-      <mat-icon *ngIf="submitting" class="spinner">sync</mat-icon>
-      {{ submitting ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Create Habit') }}
-    </button>
-  </mat-dialog-actions>
+    <button type="button" class="text-btn" (click)="onCancel()" [disabled]="submitting">Cancel</button>
+  </div>
 </div>

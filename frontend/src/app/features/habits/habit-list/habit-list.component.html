@@ -1,94 +1,75 @@
 <div class="habit-list-container">
-  <!-- Header -->
-  <div class="header">
-    <h1>
-      <mat-icon>format_list_bulleted</mat-icon>
-      My Habits
-    </h1>
-    <button mat-raised-button color="primary" (click)="onCreateHabit()">
-      <mat-icon>add</mat-icon>
-      New Habit
-    </button>
-  </div>
-
-  <!-- Progress Section -->
-  <div class="progress-section">
-    <div class="progress-text">
-      <mat-icon class="trophy-icon">emoji_events</mat-icon>
-      <span class="progress-label">Today's Progress:</span>
-      <span class="progress-count">{{ completedToday }}/{{ totalHabits }} completed</span>
-      <span class="progress-percentage">({{ completionPercentage | number:'1.0-0' }}%)</span>
+  <!-- Today's progress -->
+  <section class="progress-card">
+    <div class="progress-card-inner">
+      <div class="progress-heading">
+        <lucide-icon [img]="TrophyIcon" class="progress-icon"></lucide-icon>
+        <span class="progress-label">Today's progress</span>
+      </div>
+      <div class="progress-stats">
+        <span class="progress-count">{{ completedToday }}/{{ totalHabits }} completed</span>
+        <span class="progress-pct" *ngIf="totalHabits > 0">({{ completionPercentage | number:'1.0-0' }}%)</span>
+      </div>
+      <div class="progress-track" *ngIf="totalHabits > 0">
+        <div class="progress-fill" [style.width.%]="completionPercentage"></div>
+      </div>
     </div>
-    <mat-progress-bar mode="determinate" [value]="completionPercentage" class="progress-bar">
-    </mat-progress-bar>
-  </div>
+  </section>
 
-  <!-- Loading State -->
+  <!-- Loading -->
   <div *ngIf="loading" class="loading-state">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    <p>Loading your habits...</p>
+    <div class="loading-bar"></div>
+    <p>Loading your habits…</p>
   </div>
 
-  <!-- Habits Grid -->
+  <!-- Habits grid -->
   <div *ngIf="!loading && habits.length > 0" class="habits-grid">
-    <div *ngFor="let habit of habits" class="habit-card" [style.border-left-color]="habit.color">
-      <!-- Habit Header -->
-      <div class="habit-header">
-        <div class="habit-title">
-          <span class="habit-icon">{{ habit.iconName }}</span>
-          <h3>{{ habit.name }}</h3>
+    <article *ngFor="let habit of habits" class="habit-card" [style.--habit-color]="habit.color">
+      <div class="habit-card-accent"></div>
+      <div class="habit-card-body">
+        <div class="habit-top">
+          <div class="habit-title-row">
+            <span class="habit-emoji" aria-hidden="true">{{ habit.iconName }}</span>
+            <h3 class="habit-name">{{ habit.name }}</h3>
+          </div>
+          <div class="habit-streak" [class.is-active]="habit.currentStreak > 0">
+            <lucide-icon [img]="FlameIcon" size="14"></lucide-icon>
+            <span>{{ habit.currentStreak }} days</span>
+          </div>
         </div>
-        <div class="habit-streak" [class.active]="habit.currentStreak > 0">
-          <mat-icon>{{ habit.currentStreak > 0 ? 'local_fire_department' : 'block' }}</mat-icon>
-          <span>{{ habit.currentStreak }} days</span>
+        <div class="habit-meta">
+          <span class="habit-frequency">{{ habit.frequencyType }}</span>
+          <span class="habit-sep">·</span>
+          <span class="habit-target">{{ habit.targetCount }}× per day</span>
+        </div>
+        <div *ngIf="habit.targetCount > 1" class="habit-dots">
+          <span *ngFor="let i of getCountArray(habit.targetCount); let idx = index" class="dot" [class.done]="idx < habit.completedCountToday"></span>
+          <span class="dots-label">{{ habit.completedCountToday }}/{{ habit.targetCount }}</span>
+        </div>
+        <div class="habit-actions">
+          <button type="button" class="btn-check" [class.completed]="habit.completedToday" [disabled]="habit.completedCountToday >= habit.targetCount" (click)="onCheckIn(habit)">
+            <lucide-icon [img]="habit.completedToday ? CheckCircleIcon : CircleIcon" size="18"></lucide-icon>
+            {{ habit.completedToday ? 'Done today' : 'Mark done' }}
+          </button>
+          <button type="button" class="btn-icon" (click)="onEditHabit(habit)" title="Edit habit">
+            <lucide-icon [img]="EditIcon" size="18"></lucide-icon>
+          </button>
+          <button type="button" class="btn-icon" (click)="onViewStats(habit)" title="View statistics">
+            <lucide-icon [img]="BarChartIcon" size="18"></lucide-icon>
+          </button>
         </div>
       </div>
-
-      <!-- Habit Info -->
-      <div class="habit-info">
-        <span class="frequency">{{ habit.frequencyType }}</span>
-        <span class="separator">•</span>
-        <span class="target">{{ habit.targetCount }}x per day</span>
-      </div>
-
-      <!-- Progress (for multi-count habits) -->
-      <div *ngIf="habit.targetCount > 1" class="habit-progress">
-        <div class="progress-circles">
-          <span *ngFor="let i of [].constructor(habit.targetCount); let idx = index" class="circle"
-            [class.completed]="idx < habit.completedCountToday">
-          </span>
-        </div>
-        <span class="progress-text">{{ habit.completedCountToday }}/{{ habit.targetCount }}</span>
-      </div>
-
-      <!-- Actions -->
-      <div class="habit-actions">
-        <button mat-raised-button [color]="habit.completedToday ? 'accent' : 'primary'"
-          [disabled]="habit.completedCountToday >= habit.targetCount" (click)="onCheckIn(habit)" class="check-in-btn">
-          <mat-icon>{{ habit.completedToday ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
-          {{ habit.completedToday ? 'Completed Today' : 'Mark as Done' }}
-        </button>
-
-        <!-- Add Edit Button -->
-        <button mat-icon-button (click)="onEditHabit(habit)" matTooltip="Edit Habit">
-          <mat-icon>edit</mat-icon>
-        </button>
-
-        <button mat-icon-button (click)="onViewStats(habit)" matTooltip="View Statistics">
-          <mat-icon>bar_chart</mat-icon>
-        </button>
-      </div>
-    </div>
+    </article>
   </div>
 
-  <!-- Empty State -->
+  <!-- Empty state -->
   <div *ngIf="!loading && habits.length === 0" class="empty-state">
-    <mat-icon class="empty-icon">spa</mat-icon>
+    <lucide-icon [img]="SparklesIcon" class="empty-icon"></lucide-icon>
     <h2>No habits yet</h2>
-    <p>Start building better habits by creating your first one!</p>
-    <button mat-raised-button color="primary" (click)="onCreateHabit()">
-      <mat-icon>add</mat-icon>
-      Create Your First Habit
+    <p>Start building better routines by creating your first habit.</p>
+    <button type="button" class="btn-primary" (click)="onCreateHabit()">
+      <lucide-icon [img]="PlusIcon" size="20"></lucide-icon>
+      Create your first habit
     </button>
   </div>
 </div>

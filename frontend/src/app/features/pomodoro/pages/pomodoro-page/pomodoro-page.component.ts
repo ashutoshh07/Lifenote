@@ -1,19 +1,44 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PomodoroService } from '../../services/pomodoro.service';
-import { LayoutService } from '../../../../core/services/layout.service';
+import { LucideAngularModule } from 'lucide-angular';
+import { PomodoroService, PomodoroTimer, PomodoroType } from '../../services/pomodoro.service';
 
 @Component({
   selector: 'app-pomodoro-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './pomodoro-page.component.html',
   styleUrls: ['./pomodoro-page.component.scss'],
 })
-export class PomodoroPageComponent implements OnInit {
-  private layoutService = inject(LayoutService);
-  constructor(public pomodoroService: PomodoroService) {}
+export class PomodoroPageComponent {
+  pomodoroService = inject(PomodoroService);
+  timers$ = this.pomodoroService.getTimers$();
 
-  ngOnInit(): void {
+  addTimer(): void {
+    this.pomodoroService.addTimer();
+  }
+
+  removeTimer(id: string): void {
+    this.pomodoroService.removeTimer(id);
+  }
+
+  setType(id: string, type: PomodoroType): void {
+    this.pomodoroService.setType(id, type);
+  }
+
+  start(id: string): void {
+    this.pomodoroService.start(id);
+  }
+
+  stop(id: string): void {
+    this.pomodoroService.stop(id);
+  }
+
+  reset(id: string): void {
+    this.pomodoroService.reset(id);
+  }
+
+  formatTime(timer: PomodoroTimer): string {
+    return this.pomodoroService.formatTime(timer);
   }
 }

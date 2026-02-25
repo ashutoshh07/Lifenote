@@ -1,41 +1,50 @@
-<div>
-  <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Pomodoro</h1>
-</div>
-<div class="pomodoro-page flex justify-center items-center">
-  <div class="timer-card bg-white dark:bg-gray-800 rounded-2xl !shadow-lg w-full max-w-md p-8">
-    <div class="timer-types flex justify-center space-x-2 mb-8">
-      <button
-        [ngClass]="{'active': pomodoroService.type === 'pomodoro' }"
-        (click)="pomodoroService.setType('pomodoro')" class="px-4 py-2 rounded-full text-sm font-medium">
-        Pomodoro
-      </button>
-      <button [ngClass]="{'active': pomodoroService.type === 'short-break' }"
-        (click)="pomodoroService.setType('short-break')" class="px-4 py-2 rounded-full text-sm font-medium">
-        Short Break
-      </button>
-      <button [ngClass]="{'active': pomodoroService.type === 'long-break' }"
-        (click)="pomodoroService.setType('long-break')" class="px-4 py-2 rounded-full text-sm font-medium">
-        Long Break
+<div class="page-content">
+  <header class="page-header">
+    <div class="page-header-content">
+      <h1>Pomodoro</h1>
+      <p>Focus sessions and breaks</p>
+    </div>
+    <div class="page-header-actions">
+      <button type="button" class="btn-add-timer" (click)="addTimer()">
+        <lucide-icon name="plus" size="18"></lucide-icon>
+        Add timer
       </button>
     </div>
-    <div class="timer-display text-7xl font-bold text-center text-gray-900 dark:text-gray-100 mb-8">
-      {{ pomodoroService.time$ | async }}
-    </div>
-    <div class="timer-controls flex justify-center space-x-4">
-      <button
-        class="start-button text-white px-8 py-3 rounded-full text-lg font-semibold transition-transform transform hover:scale-105"
-        [class.running]="pomodoroService.running$ | async" (click)="
-          pomodoroService.running$.value
-            ? pomodoroService.stop()
-            : pomodoroService.start()
-        ">
-        {{ (pomodoroService.running$ | async) ? 'Stop' : 'Start' }}
-      </button>
-      <button
-        class="reset-button bg-gray-200 dark:bg-gray-700 px-8 py-3 rounded-full text-lg font-semibold transition-transform transform hover:scale-105"
-        (click)="pomodoroService.reset()">
-        Reset
-      </button>
-    </div>
+  </header>
+
+  <div class="pomodoro-grid">
+    @for (timer of (timers$ | async) ?? []; track timer.id) {
+      <div class="timer-card">
+        <div class="timer-card-header">
+          <span class="timer-label">{{ timer.label }}</span>
+          <button type="button" class="btn-remove" (click)="removeTimer(timer.id)" title="Remove timer" [disabled]="((timers$ | async)?.length ?? 0) <= 1">
+            <lucide-icon name="trash-2" size="16"></lucide-icon>
+          </button>
+        </div>
+        <div class="timer-types">
+          <button type="button" [class.active]="timer.type === 'pomodoro'" (click)="setType(timer.id, 'pomodoro')">
+            Pomodoro
+          </button>
+          <button type="button" [class.active]="timer.type === 'short-break'" (click)="setType(timer.id, 'short-break')">
+            Short Break
+          </button>
+          <button type="button" [class.active]="timer.type === 'long-break'" (click)="setType(timer.id, 'long-break')">
+            Long Break
+          </button>
+        </div>
+        <div class="timer-display">{{ formatTime(timer) }}</div>
+        <div class="timer-controls">
+          <button type="button" class="start-button" [class.running]="timer.running" [disabled]="timer.running" (click)="start(timer.id)">
+            {{ timer.running ? 'Running…' : 'Start' }}
+          </button>
+          <button type="button" class="stop-button" [disabled]="!timer.running" (click)="stop(timer.id)">
+            Stop
+          </button>
+          <button type="button" class="reset-button" (click)="reset(timer.id)">
+            Reset
+          </button>
+        </div>
+      </div>
+    }
   </div>
 </div>

@@ -1,24 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { LucideAngularModule } from 'lucide-angular';
 import { Habit } from '../models/habit.model';
 import { HabitService } from '../services/habit.service';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CheckInDialogComponent } from '../check-in-dialog/check-in-dialog.component';
 import { HabitFormComponent } from '../habit-form/habit-form.component';
+import { Trophy, Flame, Target, CheckCircle, Circle, Edit3, BarChart2, Sparkles, Plus } from 'lucide-angular';
 
 @Component({
   selector: 'app-habit-list',
   standalone: true,
   imports: [
     CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressBarModule,
-    MatSnackBarModule  // Add this
+    MatSnackBarModule,
+    LucideAngularModule,
   ],
   templateUrl: './habit-list.component.html',
   styleUrl: './habit-list.component.scss'
@@ -29,6 +26,16 @@ export class HabitListComponent implements OnInit {
   completedToday = 0;
   totalHabits = 0;
   completionPercentage = 0;
+
+  TrophyIcon = Trophy;
+  FlameIcon = Flame;
+  TargetIcon = Target;
+  CheckCircleIcon = CheckCircle;
+  CircleIcon = Circle;
+  EditIcon = Edit3;
+  BarChartIcon = BarChart2;
+  SparklesIcon = Sparkles;
+  PlusIcon = Plus;
 
   constructor(
     private habitService: HabitService,
@@ -89,12 +96,17 @@ export class HabitListComponent implements OnInit {
   }
 
   onCreateHabit(): void {
-    const dialogRef = this.dialog.open(HabitFormComponent, {
-      width: '600px',
-      maxHeight: '90vh',
-      data: {}, // No habit = create mode
-      disableClose: false
-    });
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '100%';
+    dialogConfig.maxWidth = '440px';
+    if (window.innerWidth < 576) {
+      dialogConfig.position = { top: '0px' };
+    }
+    dialogConfig.maxHeight = '90vh';
+    dialogConfig.data = {}; // No habit = create mode
+    dialogConfig.disableClose = false;
+    dialogConfig.panelClass = 'habit-form-panel';
+    const dialogRef = this.dialog.open(HabitFormComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result?.success) {
@@ -109,12 +121,18 @@ export class HabitListComponent implements OnInit {
   }
 
   // Add method to edit habit
+  getCountArray(n: number): number[] {
+    return Array.from({ length: Math.max(0, n) }, (_, i) => i);
+  }
+
   onEditHabit(habit: Habit): void {
     const dialogRef = this.dialog.open(HabitFormComponent, {
-      width: '600px',
+      width: '100%',
+      maxWidth: '440px',
       maxHeight: '90vh',
       data: { habit }, // Pass habit = edit mode
-      disableClose: false
+      disableClose: false,
+      panelClass: 'habit-form-panel',
     });
 
     dialogRef.afterClosed().subscribe(result => {

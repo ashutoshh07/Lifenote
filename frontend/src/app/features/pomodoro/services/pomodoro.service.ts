@@ -3,78 +3,150 @@ import { BehaviorSubject, interval, Subscription } from 'rxjs';
 
 export type PomodoroType = 'pomodoro' | 'short-break' | 'long-break';
 
+export interface PomodoroTimer {
+  id: string;
+  label: string;
+  type: PomodoroType;
+  minutes: number;
+  seconds: number;
+  running: boolean;
+}
+
+const DEFAULT_DURATIONS: Record<PomodoroType, number> = {
+  'pomodoro': 25,
+  'short-break': 5,
+  'long-break': 15
+};
+
+function generateId(): string {
+  return 'pomo-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9);
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class PomodoroService {
-  private timer$: Subscription | null = null;
-  
-  type: PomodoroType = 'pomodoro';
-  private running = false;
+  private timers$ = new BehaviorSubject<PomodoroTimer[]>([]);
+  private tickSub: Subscription | null = null;
 
-  private minutes = 25;
-  private seconds = 0;
+  /** All timers; subscribe in components. */
+  getTimers$() {
+    return this.timers$.asObservable();
+  }
 
-  time$ = new BehaviorSubject<string>(this.formatTime());
-  running$ = new BehaviorSubject<boolean>(this.running);
-  type$ = new BehaviorSubject<PomodoroType>(this.type);
+  get timers(): PomodoroTimer[] {
+    return this.timers$.value;
+  }
 
-  constructor() { }
+  constructor() {
+    this.ensureAtLeastOne();
+  }
 
-  start() {
-    if (this.running) return;
+  private ensureAtLeastOne(): void {
+    if (this.timers$.value.length === 0) {
+      this.addTimer();
+    }
+  }
 
-    this.running = true;
-    this.running$.next(this.running);
-    this.timer$ = interval(1000).subscribe(() => {
-      if (this.seconds > 0) {
-        this.seconds--;
-      } else if (this.minutes > 0) {
-        this.minutes--;
-        this.seconds = 59;
+  addTimer(): PomodoroTimer {
+    const id = generateId();
+    const type: PomodoroType = 'pomodoro';
+    const timer: PomodoroTimer = {
+      id,
+      label: `Focus ${this.timers$.value.length + 1}`,
+      type,
+      minutes: DEFAULT_DURATIONS[type],
+      seconds: 0,
+      running: false
+    };
+    this.timers$.next([...this.timers$.value, timer]);
+    this.startTickIfNeeded();
+    return timer;
+  }
+
+  removeTimer(id: string): void {
+    const list = this.timers$.value.filter(t => t.id !== id);
+    if (list.length === 0) {
+      this.addTimer();
+      return;
+    }
+    this.timers$.next(list);
+    this.stopTickIfIdle();
+  }
+
+  setType(id: string, type: PomodoroType): void {
+    this.updateTimer(id, t => ({
+      ...t,
+      type,
+      minutes: DEFAULT_DURATIONS[type],
+      seconds: 0,
+      running: false
+    }));
+  }
+
+  setLabel(id: string, label: string): void {
+    this.updateTimer(id, t => ({ ...t, label: label.trim() || t.label }));
+  }
+
+  start(id: string): void {
+    this.updateTimer(id, t => ({ ...t, running: true }));
+    this.startTickIfNeeded();
+  }
+
+  stop(id: string): void {
+    this.updateTimer(id, t => ({ ...t, running: false }));
+    this.stopTickIfIdle();
+  }
+
+  reset(id: string): void {
+    const type = this.timers$.value.find(t => t.id === id)?.type ?? 'pomodoro';
+    this.updateTimer(id, t => ({
+      ...t,
+      running: false,
+      minutes: DEFAULT_DURATIONS[type],
+      seconds: 0
+    }));
+  }
+
+  formatTime(timer: PomodoroTimer): string {
+    const m = timer.minutes.toString().padStart(2, '0');
+    const s = timer.seconds.toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  private updateTimer(id: string, fn: (t: PomodoroTimer) => PomodoroTimer): void {
+    this.timers$.next(
+      this.timers$.value.map(t => t.id === id ? fn(t) : t)
+    );
+  }
+
+  private startTickIfNeeded(): void {
+    if (this.tickSub || !this.timers$.value.some(t => t.running)) return;
+    this.tickSub = interval(1000).subscribe(() => this.tick());
+  }
+
+  private stopTickIfIdle(): void {
+    if (!this.timers$.value.some(t => t.running) && this.tickSub) {
+      this.tickSub.unsubscribe();
+      this.tickSub = null;
+    }
+  }
+
+  private tick(): void {
+    const next = this.timers$.value.map(t => {
+      if (!t.running) return t;
+      let { minutes, seconds } = t;
+      if (seconds > 0) seconds--;
+      else if (minutes > 0) {
+        minutes--;
+        seconds = 59;
       } else {
-        this.stop();
-        // Handle completion
+        return { ...t, running: false };
       }
-      this.time$.next(this.formatTime());
+      return { ...t, minutes, seconds };
     });
+    this.timers$.next(next);
+    this.stopTickIfIdle();
   }
 
-  stop() {
-    if (!this.running) return;
-
-    this.running = false;
-    this.running$.next(this.running);
-    if (this.timer$) {
-      this.timer$.unsubscribe();
-      this.timer$ = null;
-    }
-  }
-
-  reset() {
-    this.stop();
-    this.setType(this.type);
-  }
-
-  setType(type: PomodoroType) {
-    this.type = type;
-    this.type$.next(this.type);
-    switch (type) {
-      case 'pomodoro':
-        this.minutes = 25;
-        break;
-      case 'short-break':
-        this.minutes = 5;
-        break;
-      case 'long-break':
-        this.minutes = 15;
-        break;
-    }
-    this.seconds = 0;
-    this.time$.next(this.formatTime());
-  }
-
-  private formatTime(): string {
-    return `${this.minutes.toString().padStart(2, '0')}:${this.seconds.toString().padStart(2, '0')}`;
-  }
 }

@@ -1,19 +1,5 @@
 .tasks-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.page-header h1 {
-  font-size: 2.5rem;
-  color: var(--foreground);
+  padding: 0;
 }
 
 .add-task-btn {

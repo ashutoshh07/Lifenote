@@ -1,41 +1,101 @@
-.pomodoro-page {
-  max-width: 600px;
-  margin: 0 auto;
-  padding-top: 10px;
+.pomodoro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
-.page-header h1 {
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 2rem;
-  color: var(--foreground);
+.btn-add-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+
+  &:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
 }
 
 .timer-card {
   background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.timer-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.timer-label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.btn-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover:not(:disabled) {
+    background: var(--muted);
+    color: var(--destructive);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
 .timer-types {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 8px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .timer-types button {
   background-color: transparent;
   color: var(--muted-foreground);
   border: 2px solid var(--border);
-  padding: 0.5rem 1rem;
+  padding: 6px 12px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
   font-weight: 600;
+  font-size: 0.8125rem;
 }
 
 .timer-types button:hover {
@@ -52,25 +112,34 @@
 }
 
 .timer-display {
-  font-size: 6rem;
+  font-size: 2.75rem;
   font-weight: 700;
   color: var(--foreground);
-  font-family: monospace;
-  margin-bottom: 2rem;
+  font-family: ui-monospace, monospace;
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
 }
 
 .timer-controls {
   display: flex;
-  gap: 1rem;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .timer-controls button {
   border: none;
-  padding: 1rem 2rem;
+  padding: 8px 16px;
   border-radius: 8px;
-  font-size: 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .start-button {

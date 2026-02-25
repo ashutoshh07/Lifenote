@@ -1,19 +1,25 @@
-<div class="h-full flex flex-col bg-system-color">
+<div class="page-content h-full flex flex-col">
+  <header class="page-header">
+    <div class="page-header-content">
+      <h1>Notes</h1>
+      <p>Your notes and quick capture</p>
+    </div>
+  </header>
 
   <!-- Search Bar -->
-  <div class="max-w-7xl mx-auto mt-3 px-6 w-full">
+  <div class="notes-toolbar">
     <div class="relative search-bar">
       <input type="text" placeholder="Search notes..." [value]="searchQuery()" (input)="onSearch($event)" class="w-full pl-4 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
                focus:ring-2 focus:ring-blue-500 focus:border-transparent
-               bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white search-bar-input" />
+               dark:text-white search-bar-input text-gray-500 " />
     </div>
   </div>
 
   <!-- Inline Note Creator -->
-  <div class="max-w-7xl mx-auto mt-3 px-6 w-full">
+  <div class="notes-toolbar">
     <div class="inline-creator-container">
       @if (!isInlineCreatorExpanded()) {
-      <div (click)="expandInlineCreator()" class="inline-creator-collapsed bg-gray-50 dark:bg-gray-700 rounded-lg border 
+      <div (click)="expandInlineCreator()" class="inline-creator-collapsed rounded-lg border 
                border-gray-300 dark:border-gray-600 px-4 py-3 cursor-text
                hover:shadow-sm transition-all duration-200">
         <p class="text-gray-500 dark:text-gray-400 text-sm">Take a note...</p>
@@ -41,8 +47,8 @@
 
 
   <!-- Notes Grid -->
-  <div class="flex-1 overflow-y-auto px-6 py-6 mt-6">
-    <div class="max-w-7xl mx-auto">
+  <div class="flex-1 overflow-y-auto notes-grid-wrap">
+    <div class="notes-grid-inner">
 
       @if (pinnedNotes().length > 0) {
       <div class="mb-8">
@@ -83,7 +89,7 @@
 
   <!-- FAB Button -->
   @if (showFAB()) {
-  <button (click)="openNewNote()" class="fixed bottom-8 right-8 w-14 h-14 add-note-btn text-white rounded-full 
+  <button (click)="openNewNote()" class="fixed right-6 w-14 h-14 add-note-btn text-white rounded-full 
              shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-40">
     <lucide-icon [img]="PlusIcon" class="w-6 h-6"></lucide-icon>
   </button>

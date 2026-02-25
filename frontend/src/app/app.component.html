@@ -1,5 +1,5 @@
-<div class="app-layout flex h-screen bg-background">
-  <app-desktop-sidebar class="desktop-only" *ngIf="authService.isAuthenticated()"></app-desktop-sidebar>
+<div class="app-layout flex h-screen bg-background" [class.sidebar-collapsed]="layoutService.sidebarCollapsed()">
+  <app-desktop-sidebar class="desktop-only" *ngIf="showLayout()"></app-desktop-sidebar>
 
   <div class="flex flex-col flex-1 overflow-y-auto">
     <main class="main-content flex-1" [ngClass]="{ 'padding-0px': !authService.isAuthenticated() }">
@@ -7,5 +7,5 @@
     </main>
   </div>
 
-  <app-mobile-bottom-nav class="mobile-only" *ngIf="authService.isAuthenticated()"></app-mobile-bottom-nav>
+  <app-mobile-bottom-nav class="mobile-only" *ngIf="showLayout()"></app-mobile-bottom-nav>
 </div>

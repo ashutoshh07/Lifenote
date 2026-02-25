@@ -119,6 +119,37 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
+// ✅ Habit form: full-screen sheet on mobile (no empty space, like notes)
+.habit-form-panel {
+  @media (max-width: 576px) {
+    .cdk-overlay-pane {
+      max-width: 100vw !important;
+      width: 100vw !important;
+      height: 100dvh !important;
+      max-height: 100dvh !important;
+    }
+    .mat-mdc-dialog-container {
+      max-width: 100vw !important;
+      width: 100vw !important;
+      height: 100dvh !important;
+      max-height: 100dvh !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+    }
+    .mdc-dialog__surface {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      min-height: 100dvh !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+    }
+  }
+}
+
 // ✅ Fix dialog content overflow on mobile
 mat-dialog-content {
   @media (max-width: 576px) {
@@ -165,70 +196,107 @@ mat-dialog-content {
 }
 
 // ===================================
-// PAGE HEADER UTILITIES
+// PAGE LAYOUT — Consistent across all pages
+// ===================================
+
+.page-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+  min-height: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 0 20px 24px;
+  }
+
+  @media (max-width: 576px) {
+    padding: 0 16px 20px;
+  }
+
+  .page-header {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+// ===================================
+// PAGE HEADER — Modern, responsive
 // ===================================
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 32px;
-  border-bottom: 1px solid var(--border);
-  background: var(--card);
-  margin-bottom: 24px;
-  
+  gap: 24px;
+  padding: 28px 32px 24px;
+  margin-bottom: 20px;
+  background: transparent;
+  border-bottom: none;
+  flex-wrap: wrap;
+
   @media (max-width: 768px) {
-    padding: 20px 24px;
-    margin-bottom: 20px;
+    padding: 24px 24px 20px;
+    gap: 20px;
   }
-  
+
   @media (max-width: 576px) {
-    padding: 16px 20px;
-    margin-bottom: 16px;
+    padding: 20px 16px 16px;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 16px;
   }
-  
+
   .page-header-content {
     flex: 1;
-    
+    min-width: 0;
+
     h1 {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
       color: var(--foreground);
-      margin: 0 0 8px 0;
-      
+      margin: 0 0 4px 0;
+      line-height: 1.25;
+
       @media (max-width: 768px) {
-        font-size: 1.75rem;
-      }
-      
-      @media (max-width: 576px) {
         font-size: 1.5rem;
       }
+
+      @media (max-width: 576px) {
+        font-size: 1.375rem;
+      }
     }
-    
+
     p {
-      font-size: 1rem;
+      font-size: 0.9375rem;
       color: var(--muted-foreground);
       margin: 0;
-      
+      line-height: 1.4;
+
       @media (max-width: 576px) {
-        font-size: 0.9rem;
+        font-size: 0.875rem;
       }
     }
   }
-  
+
   .page-header-actions {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
-    
+    flex-shrink: 0;
+
     @media (max-width: 576px) {
       width: 100%;
-      
-      button {
+      justify-content: stretch;
+
+      button,
+      .btn-primary {
         flex: 1;
+        min-width: 0;
       }
     }
   }
@@ -251,44 +319,38 @@ mat-dialog-content {
   to { opacity: 1; }
 }
 
-@keyframes slideUp {
-  
+// @keyframes slideUp {
+// .cdk-overlay-pane {
+//   @media (max-width: 576px) {
+//     max-width: 100vw !important;
+//     width: 100% !important;
+//     height: 100% !important;
+//     position: fixed !important;
+//     bottom: 0 !important;
+//     top: 0 !important;
+//     left: 0 !important;
+//     right: 0 !important;
+//   }
+// }
 
-// ===================================
-// TRUE MOBILE FULLSCREEN DIALOGS
-// ===================================
-
-.cdk-overlay-pane {
-  @media (max-width: 576px) {
-    max-width: 100vw !important;
-    width: 100% !important;
-    height: 100% !important;
-    position: fixed !important;
-    bottom: 0 !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-  }
-}
-
-.mat-mdc-dialog-container {
-  @media (max-width: 576px) {
-    --mdc-dialog-container-shape: 0px !important;
-    border-radius: 0 !important;
+// .mat-mdc-dialog-container {
+//   @media (max-width: 576px) {
+//     --mdc-dialog-container-shape: 0px !important;
+//     border-radius: 0 !important;
     
-    .mdc-dialog__surface {
-      border-radius: 0 !important;
-      height: 100% !important;
-      max-height: 100% !important;
-    }
-  }
-}
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+//     .mdc-dialog__surface {
+//       border-radius: 0 !important;
+//       height: 100% !important;
+//       max-height: 100% !important;
+//     }
+//   }
+// }
+//   from {
+//     opacity: 0;
+//     transform: translateY(20px);
+//   }
+//   to {
+//     opacity: 1;
+//     transform: translateY(0);
+//   }
+// }

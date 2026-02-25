@@ -1,17 +1,119 @@
-<div>
-  <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
-  <p class="mt-2 text-lg text-gray-600 dark:text-gray-400">
-    This is where your Settings will be displayed.
-  </p>
-  <div class="settings-card bg-white dark:bg-gray-800 rounded-2xl !shadow-lg w-full max-w-md">
-    <label>Appearance</label>
-    <div class="theme-types flex justify-center space-x-2 mb-8">
-      <button [class.active]="currentTheme === theme.Dark" (click)="setTheme(theme.Dark)"
-        class="px-4 py-2 rounded-full text-sm font-medium">Dark</button>
-      <button [class.active]="currentTheme === theme.Light" (click)="setTheme(theme.Light)"
-        class="px-4 py-2 rounded-full text-sm font-medium">Light</button>
-      <button [class.active]="currentTheme === theme.System" (click)="setTheme(theme.System)"
-        class="px-4 py-2 rounded-full text-sm font-medium">System</button>
+<div class="page-content settings-page">
+  <header class="page-header">
+    <div class="page-header-content">
+      <h1>Settings</h1>
+      <p>Appearance, notifications, and preferences</p>
     </div>
+  </header>
+
+  <div class="settings-content">
+    <!-- Appearance -->
+    <section class="settings-section">
+      <h2 class="section-title">
+        <lucide-icon [img]="SunIcon" size="20"></lucide-icon>
+        Appearance
+      </h2>
+      <div class="settings-card theme-card">
+        <p class="card-label">Theme</p>
+        <p class="card-description">Choose how Lifenote looks. System follows your device.</p>
+        <div class="theme-options" role="group" aria-label="Theme selection">
+          <button
+            type="button"
+            class="theme-option"
+            [class.selected]="currentTheme === theme.Light"
+            (click)="setTheme(theme.Light)"
+            aria-pressed="currentTheme === theme.Light"
+          >
+            <span class="theme-option-icon">
+              <lucide-icon [img]="SunIcon" size="22"></lucide-icon>
+            </span>
+            <span class="theme-option-label">Light</span>
+          </button>
+          <button
+            type="button"
+            class="theme-option"
+            [class.selected]="currentTheme === theme.Dark"
+            (click)="setTheme(theme.Dark)"
+            aria-pressed="currentTheme === theme.Dark"
+          >
+            <span class="theme-option-icon">
+              <lucide-icon [img]="MoonIcon" size="22"></lucide-icon>
+            </span>
+            <span class="theme-option-label">Dark</span>
+          </button>
+          <button
+            type="button"
+            class="theme-option"
+            [class.selected]="currentTheme === theme.System"
+            (click)="setTheme(theme.System)"
+            aria-pressed="currentTheme === theme.System"
+          >
+            <span class="theme-option-icon">
+              <lucide-icon [img]="MonitorIcon" size="22"></lucide-icon>
+            </span>
+            <span class="theme-option-label">System</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notifications -->
+    <section class="settings-section">
+      <h2 class="section-title">
+        <lucide-icon [img]="BellIcon" size="20"></lucide-icon>
+        Notifications
+      </h2>
+      <div class="settings-card settings-row">
+        <div class="row-content">
+          <span class="row-title">Reminders</span>
+          <span class="row-description">Habit and task reminders</span>
+        </div>
+        <span class="row-badge">Coming soon</span>
+      </div>
+    </section>
+
+    <!-- Account -->
+    <section class="settings-section">
+      <h2 class="section-title">
+        <lucide-icon [img]="UserIcon" size="20"></lucide-icon>
+        Account
+      </h2>
+      <div class="settings-card settings-row">
+        <div class="row-content">
+          <span class="row-title">Profile</span>
+          <span class="row-description">Name, username, email</span>
+        </div>
+        <span class="row-badge">Coming soon</span>
+      </div>
+    </section>
+
+    <!-- Data & privacy -->
+    <section class="settings-section">
+      <h2 class="section-title">
+        <lucide-icon [img]="ShieldIcon" size="20"></lucide-icon>
+        Data &amp; privacy
+      </h2>
+      <div class="settings-card settings-row">
+        <div class="row-content">
+          <span class="row-title">Export data</span>
+          <span class="row-description">Download your notes and habits</span>
+        </div>
+        <span class="row-badge">Coming soon</span>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="settings-section">
+      <h2 class="section-title">
+        <lucide-icon [img]="InfoIcon" size="20"></lucide-icon>
+        About
+      </h2>
+      <div class="settings-card settings-row">
+        <div class="row-content">
+          <span class="row-title">Lifenote</span>
+          <span class="row-description">Notes, habits, and focus in one place</span>
+        </div>
+      </div>
+    </section>
   </div>
 </div>

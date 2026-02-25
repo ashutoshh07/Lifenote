@@ -13,31 +13,27 @@
   <nav class="flex-grow">
     <ul class="list-none p-0 m-0">
       <li>
-        <a routerLink="/notes" routerLinkActive="active"
-          class="flex items-center column-gap-2 p-3 mb-2 rounded-md text-muted-foreground font-medium transition-colors hover:bg-accent">
-          <i class="fa-solid fa-note-sticky !mr-0"></i>
-          <span class="mb-0.5" *ngIf="!layoutService.sidebarCollapsed()">Notes</span>
+        <a routerLink="/notes" routerLinkActive="active" class="nav-link">
+          <lucide-icon name="notebook" size="20"></lucide-icon>
+          <span class="nav-text" *ngIf="!layoutService.sidebarCollapsed()">Notes</span>
         </a>
       </li>
       <li>
-        <a routerLink="/pomodoro" routerLinkActive="active"
-          class="flex items-center column-gap-2 p-3 mb-2 rounded-md text-muted-foreground font-medium transition-colors hover:bg-accent">
-          <i-lucide name="timer"></i-lucide>
-          <span class="mb-0.5" *ngIf="!layoutService.sidebarCollapsed()">Pomodoro</span>
+        <a routerLink="/pomodoro" routerLinkActive="active" class="nav-link">
+          <lucide-icon name="timer" size="20"></lucide-icon>
+          <span class="nav-text" *ngIf="!layoutService.sidebarCollapsed()">Pomodoro</span>
         </a>
       </li>
       <li>
-        <a routerLink="/habits" routerLinkActive="active"
-          class="flex items-center column-gap-2 p-3 mb-2 rounded-md text-muted-foreground font-medium transition-colors hover:bg-accent">
-          <i-lucide name="repeat-2"></i-lucide>
-          <span class="mb-0.5" *ngIf="!layoutService.sidebarCollapsed()">Habits</span>
+        <a routerLink="/habits" routerLinkActive="active" class="nav-link">
+          <lucide-icon name="repeat-2" size="20"></lucide-icon>
+          <span class="nav-text" *ngIf="!layoutService.sidebarCollapsed()">Habits</span>
         </a>
       </li>
       <li>
-        <a routerLink="/settings" routerLinkActive="active"
-          class="flex items-center column-gap-2 p-3 mb-2 rounded-md text-muted-foreground font-medium transition-colors hover:bg-accent">
-          <i-lucide name="settings"></i-lucide>
-          <span class="mb-0.5" *ngIf="!layoutService.sidebarCollapsed()">Settings</span>
+        <a routerLink="/settings" routerLinkActive="active" class="nav-link">
+          <lucide-icon name="settings" size="20"></lucide-icon>
+          <span class="nav-text" *ngIf="!layoutService.sidebarCollapsed()">Settings</span>
         </a>
       </li>
     </ul>

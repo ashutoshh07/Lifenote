@@ -2,10 +2,10 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { LucideAngularModule, X, Check } from 'lucide-angular';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -25,15 +25,12 @@ export interface HabitFormDialogData {
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
     MatRadioModule,
     MatCheckboxModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatChipsModule
+    MatChipsModule,
+    LucideAngularModule
   ],
   templateUrl: './habit-form.component.html',
   styleUrl: './habit-form.component.scss'
@@ -42,6 +39,8 @@ export class HabitFormComponent implements OnInit {
   habitForm: FormGroup;
   submitting = false;
   isEditMode = false;
+  CloseIcon = X;
+  CheckIcon = Check;
 
   // Icon options
   availableIcons = [

@@ -1,378 +1,411 @@
 @use '../../../../styles/variables' as *;
 
 .habit-list-container {
-  padding: $spacing-lg;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: var(--background); // ✅ Fixed background
+  padding: 0 0 24px 0;
+}
 
-  @media (max-width: 768px) {
-    padding: $spacing-md;
-  }
+// —— Today's progress card ——
+.progress-card {
+  margin-bottom: 28px;
+}
+
+.progress-card-inner {
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: 12px;
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 
   @media (max-width: 576px) {
-    padding: $spacing-sm;
+    padding: 16px 20px;
   }
 }
 
-.header {
+.progress-heading {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: $spacing-xl;
-  gap: $spacing-md;
+  gap: 10px;
+  margin-bottom: 8px;
 
-  h1 {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    margin: 0;
-    font-size: 2rem;
-    color: var(--foreground); // ✅ Use CSS variable
-
-    mat-icon {
-      font-size: 2rem;
-      width: 2rem;
-      height: 2rem;
-    }
+  .progress-icon {
+    color: var(--warning);
+    flex-shrink: 0;
   }
 
-  // ✅ Mobile: Stack vertically
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-
-    h1 {
-      font-size: 1.5rem;
-      
-      mat-icon {
-        font-size: 1.5rem;
-        width: 1.5rem;
-        height: 1.5rem;
-      }
-    }
-
-    button {
-      width: 100%;
-    }
+  .progress-label {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--foreground);
   }
 }
 
-.progress-section {
-  background: var(--card); // ✅ Use CSS variable
-  color: var(--card-foreground); // ✅ Fixed text color
-  padding: $spacing-lg;
-  border-radius: $border-radius-md;
-  margin-bottom: $spacing-xl;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.progress-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 
-  // ✅ Mobile padding
+  .progress-count {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--primary);
+  }
+
+  .progress-pct {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+  }
+}
+
+.progress-track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--muted);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--primary);
+  transition: width 0.35s ease;
+}
+
+// —— Loading ——
+.loading-state {
+  text-align: center;
+  padding: 48px 24px;
+
   @media (max-width: 576px) {
-    padding: $spacing-md;
+    padding: 32px 16px;
   }
 
-  .progress-text {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    margin-bottom: $spacing-md;
-    flex-wrap: wrap;
+  .loading-bar {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--muted);
+    max-width: 200px;
+    margin: 0 auto 16px;
+    overflow: hidden;
 
-    .trophy-icon {
-      color: $warning-color;
-      font-size: 1.5rem;
-      width: 1.5rem;
-      height: 1.5rem;
-    }
-
-    .progress-label {
-      font-weight: 500;
-      color: var(--card-foreground); // ✅ Fixed
-    }
-
-    .progress-count {
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .progress-percentage {
-      color: var(--muted-foreground);
-    }
-
-    // ✅ Mobile: Smaller text
-    @media (max-width: 576px) {
-      font-size: 0.9rem;
-      gap: $spacing-xs;
-
-      .trophy-icon {
-        font-size: 1.25rem;
-        width: 1.25rem;
-        height: 1.25rem;
-      }
+    &::after {
+      content: '';
+      display: block;
+      height: 100%;
+      width: 40%;
+      background: var(--primary);
+      animation: loading-pulse 1.2s ease-in-out infinite;
     }
   }
 
-  .progress-bar {
-    height: 8px;
-    border-radius: 4px;
+  p {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--muted-foreground);
   }
 }
 
+@keyframes loading-pulse {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(250%); }
+}
+
+// —— Habits grid ——
 .habits-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: $spacing-lg;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
 
-  // ✅ Tablet: 2 columns
   @media (max-width: 992px) and (min-width: 577px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  // ✅ Mobile: 1 column, smaller min-width
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
-    gap: $spacing-md;
+    gap: 16px;
   }
 }
 
 .habit-card {
-  background: var(--card); // ✅ Use CSS variable
-  color: var(--card-foreground); // ✅ Fixed text color
-  border-radius: $border-radius-md;
-  padding: $spacing-lg;
-  border-left: 4px solid var(--primary);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-
-  // ✅ Mobile: Less padding
-  @media (max-width: 576px) {
-    padding: $spacing-md;
-  }
+  position: relative;
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
 
   &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
-  .habit-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: $spacing-md;
-    gap: $spacing-sm;
+  @media (max-width: 576px) {
+    border-radius: 10px;
+  }
+}
 
-    .habit-title {
-      display: flex;
-      align-items: center;
-      gap: $spacing-sm;
-      flex: 1;
-      min-width: 0; // ✅ Allow text truncation
+.habit-card-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--habit-color, var(--primary));
+}
 
-      .habit-icon {
-        font-size: 1.5rem;
-        flex-shrink: 0; // ✅ Don't shrink icon
-      }
+.habit-card-body {
+  padding: 18px 18px 18px 22px;
 
-      h3 {
-        margin: 0;
-        font-size: 1.25rem;
-        color: var(--card-foreground); // ✅ Fixed
-        overflow: hidden; // ✅ Handle long text
-        text-overflow: ellipsis;
-        white-space: nowrap;
+  @media (max-width: 576px) {
+    padding: 14px 14px 14px 18px;
+  }
+}
 
-        // ✅ Mobile: Smaller font
-        @media (max-width: 576px) {
-          font-size: 1.1rem;
-        }
-      }
-    }
+.habit-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
 
-    .habit-streak {
-      display: flex;
-      align-items: center;
-      gap: $spacing-xs;
-      padding: $spacing-xs $spacing-sm;
-      border-radius: $border-radius-sm;
-      background: var(--muted);
-      color: var(--streak-broken);
-      flex-shrink: 0; // ✅ Don't shrink streak badge
+.habit-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
 
-      &.active {
-        background: rgba(255, 152, 0, 0.1);
-        color: var(--streak-active);
-      }
-
-      mat-icon {
-        font-size: 1.25rem;
-        width: 1.25rem;
-        height: 1.25rem;
-      }
-
-      span {
-        font-weight: 600;
-        font-size: 0.9rem;
-
-        // ✅ Mobile: Hide "days" text on tiny screens
-        @media (max-width: 400px) {
-          display: none;
-        }
-      }
-    }
+  .habit-emoji {
+    font-size: 1.5rem;
+    line-height: 1;
+    flex-shrink: 0;
   }
 
-  .habit-info {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    color: var(--muted-foreground);
-    font-size: 0.9rem;
-    margin-bottom: $spacing-md;
-    flex-wrap: wrap; // ✅ Wrap on small screens
+  .habit-name {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--foreground);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
-    .separator {
-      opacity: 0.5;
-    }
-
-    // ✅ Mobile: Smaller text
     @media (max-width: 576px) {
-      font-size: 0.85rem;
-    }
-  }
-
-  .habit-progress {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: $spacing-md;
-
-    .progress-circles {
-      display: flex;
-      gap: $spacing-xs;
-      flex-wrap: wrap; // ✅ Wrap if too many
-
-      .circle {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: var(--pending);
-        
-        &.completed {
-          background: var(--completed);
-        }
-
-        // ✅ Mobile: Slightly smaller
-        @media (max-width: 576px) {
-          width: 10px;
-          height: 10px;
-        }
-      }
-    }
-
-    .progress-text {
-      font-size: 0.9rem;
-      color: var(--muted-foreground);
-      font-weight: 500;
-    }
-  }
-
-  .habit-actions {
-    display: flex;
-    gap: $spacing-sm;
-    align-items: center;
-
-    .check-in-btn {
-      flex: 1;
-      min-width: 0; // ✅ Allow button to shrink
-
-      // ✅ Mobile: Smaller button text
-      @media (max-width: 576px) {
-        font-size: 0.85rem;
-        padding: 6px 12px;
-
-        mat-icon {
-          font-size: 1.1rem;
-          width: 1.1rem;
-          height: 1.1rem;
-        }
-      }
-    }
-
-    // ✅ Mobile: Stack buttons if needed
-    @media (max-width: 400px) {
-      flex-wrap: wrap;
-
-      .check-in-btn {
-        flex-basis: 100%;
-      }
+      font-size: 1rem;
     }
   }
 }
 
+.habit-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  background: var(--muted);
+  color: var(--streak-broken);
+  flex-shrink: 0;
+
+  &.is-active {
+    background: rgba(255, 152, 0, 0.15);
+    color: var(--streak-active);
+  }
+}
+
+.habit-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+
+  .habit-sep {
+    opacity: 0.6;
+  }
+
+  @media (max-width: 576px) {
+    font-size: 0.8125rem;
+  }
+}
+
+.habit-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--pending);
+    flex-shrink: 0;
+
+    &.done {
+      background: var(--completed);
+    }
+  }
+
+  .dots-label {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+    margin-left: 4px;
+  }
+}
+
+.habit-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  .btn-check {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, opacity 0.2s;
+
+    &:not(.completed) {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    &.completed {
+      background: var(--muted);
+      color: var(--muted-foreground);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &:not(:disabled):hover {
+      opacity: 0.92;
+    }
+
+    @media (max-width: 576px) {
+      font-size: 0.8125rem;
+      min-height: 36px;
+      padding: 6px 12px;
+    }
+  }
+
+  .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover {
+      background: var(--muted);
+      color: var(--foreground);
+    }
+
+    @media (max-width: 576px) {
+      width: 36px;
+      height: 36px;
+    }
+  }
+}
+
+// —— Empty state ——
 .empty-state {
   text-align: center;
-  padding: $spacing-xl * 2;
-  background: var(--card); // ✅ Use CSS variable
-  border-radius: $border-radius-md;
-  margin: $spacing-lg 0;
+  padding: 56px 24px;
+  background: var(--card);
+  border-radius: 12px;
+  border: 1px dashed var(--border);
 
-  // ✅ Mobile: Less padding
   @media (max-width: 576px) {
-    padding: $spacing-xl;
+    padding: 40px 20px;
   }
 
   .empty-icon {
-    font-size: 4rem;
-    width: 4rem;
-    height: 4rem;
+    width: 64px;
+    height: 64px;
     color: var(--muted-foreground);
-    margin-bottom: $spacing-lg;
+    margin-bottom: 20px;
+    opacity: 0.8;
 
-    // ✅ Mobile: Smaller icon
     @media (max-width: 576px) {
-      font-size: 3rem;
-      width: 3rem;
-      height: 3rem;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
     }
   }
 
   h2 {
-    color: var(--foreground); // ✅ Fixed
-    margin-bottom: $spacing-sm;
+    margin: 0 0 8px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--foreground);
 
     @media (max-width: 576px) {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
     }
   }
 
   p {
+    margin: 0 0 24px;
+    font-size: 1rem;
     color: var(--muted-foreground);
-    margin-bottom: $spacing-lg;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
 
     @media (max-width: 576px) {
-      font-size: 0.9rem;
+      font-size: 0.9375rem;
+      margin-bottom: 20px;
     }
   }
 
-  button {
-    // ✅ Mobile: Full width
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+
+    &:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
     @media (max-width: 576px) {
       width: 100%;
+      justify-content: center;
     }
-  }
-}
-
-.loading-state {
-  text-align: center;
-  padding: $spacing-xl * 2;
-
-  // ✅ Mobile: Less padding
-  @media (max-width: 576px) {
-    padding: $spacing-xl;
-  }
-
-  p {
-    margin-top: $spacing-lg;
-    color: var(--muted-foreground);
   }
 }
