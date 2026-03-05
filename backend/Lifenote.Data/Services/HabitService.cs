@@ -7,24 +7,24 @@ namespace Lifenote.Data.Services
     public class HabitService : IHabitService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IHabitStreakService _habitStreakService;
 
-        public HabitService(IUnitOfWork unitOfWork)
+        public HabitService(IUnitOfWork unitOfWork, IHabitStreakService habitStreakService)
         {
             _unitOfWork = unitOfWork;
+            _habitStreakService = habitStreakService;
         }
 
         // ===== CREATE =====
 
         public async Task<HabitDto> CreateHabitAsync(int userId, CreateHabitDto dto)
         {
-            // Validation
             if (string.IsNullOrWhiteSpace(dto.Name))
                 throw new ArgumentException("Habit name is required");
 
             if (dto.FrequencyType == "Custom" && string.IsNullOrWhiteSpace(dto.FrequencyValue))
                 throw new ArgumentException("Custom frequency requires days to be specified");
 
-            // Create habit
             var habit = new Habit
             {
                 UserId = userId,
@@ -43,20 +43,9 @@ namespace Lifenote.Data.Services
             };
 
             await _unitOfWork.Habits.CreateAsync(habit);
+            await _unitOfWork.SaveChangesAsync(); // Save first so habit.Id is populated
 
-            // Create initial streak record
-            var streak = new HabitStreak
-            {
-                HabitId = habit.Id,
-                UserId = userId,
-                CurrentStreak = 0,
-                LongestStreak = 0,
-                TotalCompletions = 0,
-                CalculatedAt = DateTime.UtcNow
-            };
-
-            await _unitOfWork.Habits.CreateStreakAsync(streak);
-            await _unitOfWork.SaveChangesAsync();
+            await _habitStreakService.CreateInitialStreakAsync(habit.Id, userId);
 
             return await MapToHabitDto(habit, userId);
         }
@@ -78,15 +67,11 @@ namespace Lifenote.Data.Services
             var habits = await _unitOfWork.Habits.GetHabitsWithTodayStatusAsync(userId, DateTime.UtcNow.Date);
 
             if (!includeInactive)
-            {
                 habits = habits.Where(h => h.IsActive);
-            }
 
             var habitDtos = new List<HabitDto>();
             foreach (var habit in habits)
-            {
                 habitDtos.Add(await MapToHabitDto(habit, userId));
-            }
 
             return habitDtos;
         }
@@ -100,7 +85,6 @@ namespace Lifenote.Data.Services
             if (habit == null)
                 throw new KeyNotFoundException("Habit not found");
 
-            // Update only provided fields
             if (!string.IsNullOrWhiteSpace(dto.Name))
                 habit.Name = dto.Name.Trim();
 
@@ -145,6 +129,9 @@ namespace Lifenote.Data.Services
             if (!exists)
                 return false;
 
+            // Delete associated streak first before deleting habit
+            await _habitStreakService.DeleteStreakAsync(habitId, userId);
+
             var result = await _unitOfWork.Habits.DeleteAsync(habitId, userId);
             await _unitOfWork.SaveChangesAsync();
 
@@ -180,14 +167,11 @@ namespace Lifenote.Data.Services
                 throw new InvalidOperationException("Cannot check in to an inactive habit");
 
             var today = DateTime.UtcNow.Date;
-
-            // Check if already completed target count today
             var todayCount = await _unitOfWork.Habits.GetTodayLogCountAsync(dto.HabitId, userId, today);
 
             if (todayCount >= habit.TargetCount)
                 throw new InvalidOperationException($"You've already completed this habit {habit.TargetCount} time(s) today");
 
-            // Create log
             var log = new HabitLog
             {
                 HabitId = dto.HabitId,
@@ -199,11 +183,10 @@ namespace Lifenote.Data.Services
             };
 
             await _unitOfWork.Habits.AddLogAsync(log);
-
-            // Update streak
-            var streak = await UpdateStreakAsync(dto.HabitId, userId, today);
-
             await _unitOfWork.SaveChangesAsync();
+
+            // Delegate streak update entirely to HabitStreakService
+            var streak = await _habitStreakService.UpdateStreakAfterCheckInAsync(dto.HabitId, userId, today);
 
             return new HabitLogDto
             {
@@ -225,13 +208,11 @@ namespace Lifenote.Data.Services
             if (log == null)
                 return false;
 
-            // Remove log
             await _unitOfWork.Habits.RemoveLogAsync(log.Id, userId);
-
-            // Recalculate streak
-            await RecalculateStreakAsync(habitId, userId);
-
             await _unitOfWork.SaveChangesAsync();
+
+            // Delegate streak recalculation entirely to HabitStreakService
+            await _habitStreakService.RecalculateStreakAsync(habitId, userId);
 
             return true;
         }
@@ -265,19 +246,17 @@ namespace Lifenote.Data.Services
             if (habit == null)
                 throw new KeyNotFoundException("Habit not found");
 
-            var streak = await _unitOfWork.Habits.GetStreakAsync(habitId, userId);
+            var streak = await _habitStreakService.GetByHabitIdAsync(habitId, userId);
 
             var thirtyDaysAgo = DateTime.UtcNow.Date.AddDays(-30);
             var logs = await _unitOfWork.Habits.GetLogsAsync(habitId, userId, thirtyDaysAgo);
             var logsList = logs.ToList();
 
-            // Calculate completion rate (last 30 days)
-            var expectedDays = 30; // Simplified - should calculate based on frequency
+            var expectedDays = 30;
             var completionRate = logsList.Count > 0
                 ? (double)logsList.Count / expectedDays * 100
                 : 0;
 
-            // Best/worst day of week
             var dayGroups = logsList
                 .GroupBy(l => l.CompletedDate.DayOfWeek)
                 .Select(g => new { Day = g.Key, Count = g.Count() })
@@ -287,7 +266,6 @@ namespace Lifenote.Data.Services
             var bestDay = dayGroups.FirstOrDefault()?.Day.ToString();
             var worstDay = dayGroups.LastOrDefault()?.Day.ToString();
 
-            // Last 7 days activity
             var sevenDaysAgo = DateTime.UtcNow.Date.AddDays(-7);
             var last7Days = Enumerable.Range(0, 7)
                 .Select(i => sevenDaysAgo.AddDays(i))
@@ -359,112 +337,11 @@ namespace Lifenote.Data.Services
             };
         }
 
-        // ===== PRIVATE HELPER METHODS =====
-
-        private async Task<HabitStreak> UpdateStreakAsync(int habitId, int userId, DateTime today)
-        {
-            var streak = await _unitOfWork.Habits.GetStreakAsync(habitId, userId);
-
-            if (streak == null)
-            {
-                streak = new HabitStreak
-                {
-                    HabitId = habitId,
-                    UserId = userId,
-                    CurrentStreak = 1,
-                    LongestStreak = 1,
-                    TotalCompletions = 1,
-                    LastCompletedDate = today,
-                    CalculatedAt = DateTime.UtcNow
-                };
-                await _unitOfWork.Habits.CreateStreakAsync(streak);
-            }
-            else
-            {
-                if (streak.LastCompletedDate.HasValue)
-                {
-                    var daysSinceLastLog = (today - streak.LastCompletedDate.Value).Days;
-
-                    if (daysSinceLastLog == 1) // Consecutive day
-                    {
-                        streak.CurrentStreak++;
-                    }
-                    else if (daysSinceLastLog > 1) // Streak broken
-                    {
-                        streak.CurrentStreak = 1;
-                    }
-                    // Same day = don't change streak
-                }
-                else
-                {
-                    streak.CurrentStreak = 1;
-                }
-
-                if (streak.CurrentStreak > streak.LongestStreak)
-                {
-                    streak.LongestStreak = streak.CurrentStreak;
-                }
-
-                streak.TotalCompletions++;
-                streak.LastCompletedDate = today;
-                streak.CalculatedAt = DateTime.UtcNow;
-
-                await _unitOfWork.Habits.UpdateStreakAsync(streak);
-            }
-
-            return streak;
-        }
-
-        private async Task RecalculateStreakAsync(int habitId, int userId)
-        {
-            var logs = await _unitOfWork.Habits.GetLogsAsync(habitId, userId);
-            var sortedLogs = logs.OrderBy(l => l.CompletedDate).ToList();
-
-            var streak = await _unitOfWork.Habits.GetStreakAsync(habitId, userId);
-
-            if (streak == null) return;
-
-            if (!sortedLogs.Any())
-            {
-                streak.CurrentStreak = 0;
-                streak.LongestStreak = 0;
-                streak.TotalCompletions = 0;
-                streak.LastCompletedDate = null;
-            }
-            else
-            {
-                var currentStreak = 1;
-                var longestStreak = 1;
-
-                for (int i = 1; i < sortedLogs.Count; i++)
-                {
-                    var daysDiff = (sortedLogs[i].CompletedDate - sortedLogs[i - 1].CompletedDate).Days;
-
-                    if (daysDiff == 1)
-                    {
-                        currentStreak++;
-                        if (currentStreak > longestStreak)
-                            longestStreak = currentStreak;
-                    }
-                    else if (daysDiff > 1)
-                    {
-                        currentStreak = 1;
-                    }
-                }
-
-                streak.CurrentStreak = currentStreak;
-                streak.LongestStreak = longestStreak;
-                streak.TotalCompletions = sortedLogs.Count;
-                streak.LastCompletedDate = sortedLogs.Last().CompletedDate;
-            }
-
-            streak.CalculatedAt = DateTime.UtcNow;
-            await _unitOfWork.Habits.UpdateStreakAsync(streak);
-        }
+        // ===== PRIVATE HELPERS =====
 
         private async Task<HabitDto> MapToHabitDto(Habit habit, int userId)
         {
-            var streak = await _unitOfWork.Habits.GetStreakAsync(habit.Id, userId);
+            var streak = await _habitStreakService.GetByHabitIdAsync(habit.Id, userId);
             var today = DateTime.UtcNow.Date;
             var todayCount = await _unitOfWork.Habits.GetTodayLogCountAsync(habit.Id, userId, today);
 
@@ -509,7 +386,6 @@ namespace Lifenote.Data.Services
             if (string.IsNullOrEmpty(frequencyValue))
                 return 0;
 
-            // Parse JSON array: ["Monday","Wednesday","Friday"]
             var days = System.Text.Json.JsonSerializer.Deserialize<List<string>>(frequencyValue);
             if (days == null) return 0;
 

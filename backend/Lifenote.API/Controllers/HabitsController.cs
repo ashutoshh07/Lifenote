@@ -1,8 +1,7 @@
-﻿using Lifenote.Core.DTOs.Habit;
+using Lifenote.Core.DTOs.Habit;
 using Lifenote.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Lifenote.API.Controllers
 {
@@ -12,10 +11,12 @@ namespace Lifenote.API.Controllers
     public class HabitsController : ControllerBase
     {
         private readonly IHabitService _habitService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public HabitsController(IHabitService habitService)
+        public HabitsController(IHabitService habitService, ICurrentUserService currentUserService)
         {
             _habitService = habitService;
+            _currentUserService = currentUserService;
         }
 
         // ===== CRUD OPERATIONS =====
@@ -29,16 +30,9 @@ namespace Lifenote.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<HabitDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<HabitDto>>> GetHabits([FromQuery] bool includeInactive = false)
         {
-            try
-            {
-                var userId = GetUserId();
-                var habits = await _habitService.GetUserHabitsAsync(userId, includeInactive);
-                return Ok(habits);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
+            var habits = await _habitService.GetUserHabitsAsync(userId, includeInactive);
+            return Ok(habits);
         }
 
         /// <summary>
@@ -53,7 +47,7 @@ namespace Lifenote.API.Controllers
         {
             try
             {
-                var userId = GetUserId();
+                var userId = await _currentUserService.GetCurrentUserIdAsync();
                 var habit = await _habitService.GetHabitByIdAsync(userId, id);
                 return Ok(habit);
             }
@@ -75,9 +69,9 @@ namespace Lifenote.API.Controllers
         {
             try
             {
-                var userId = GetUserId();
+                var userId = await _currentUserService.GetCurrentUserIdAsync();
                 var habit = await _habitService.CreateHabitAsync(userId, dto);
-                return CreatedAtAction(nameof(GetHabit), new { id = habit.Id }, habit);
+                return Ok();
             }
             catch (ArgumentException ex)
             {
@@ -99,7 +93,7 @@ namespace Lifenote.API.Controllers
         {
             try
             {
-                var userId = GetUserId();
+                var userId = await _currentUserService.GetCurrentUserIdAsync();
                 var habit = await _habitService.UpdateHabitAsync(userId, id, dto);
                 return Ok(habit);
             }
@@ -123,7 +117,7 @@ namespace Lifenote.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteHabit(int id)
         {
-            var userId = GetUserId();
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
             var result = await _habitService.DeleteHabitAsync(userId, id);
 
             if (!result)
@@ -142,7 +136,7 @@ namespace Lifenote.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ToggleHabitStatus(int id)
         {
-            var userId = GetUserId();
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
             var result = await _habitService.ToggleHabitStatusAsync(userId, id);
 
             if (!result)
@@ -166,7 +160,7 @@ namespace Lifenote.API.Controllers
         {
             try
             {
-                var userId = GetUserId();
+                var userId = await _currentUserService.GetCurrentUserIdAsync();
                 var log = await _habitService.CheckInHabitAsync(userId, dto);
                 return CreatedAtAction(nameof(GetHabitHistory), new { id = dto.HabitId }, log);
             }
@@ -190,7 +184,7 @@ namespace Lifenote.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UndoCheckIn(int id)
         {
-            var userId = GetUserId();
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
             var result = await _habitService.UndoCheckInAsync(userId, id);
 
             if (!result)
@@ -218,7 +212,7 @@ namespace Lifenote.API.Controllers
         {
             try
             {
-                var userId = GetUserId();
+                var userId = await _currentUserService.GetCurrentUserIdAsync();
                 var logs = await _habitService.GetHabitHistoryAsync(userId, id, startDate, endDate);
                 return Ok(logs);
             }
@@ -240,7 +234,7 @@ namespace Lifenote.API.Controllers
         {
             try
             {
-                var userId = GetUserId();
+                var userId = await _currentUserService.GetCurrentUserIdAsync();
                 var stats = await _habitService.GetHabitStatisticsAsync(userId, id);
                 return Ok(stats);
             }
@@ -259,27 +253,13 @@ namespace Lifenote.API.Controllers
         [ProducesResponseType(typeof(WeeklyCalendarDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<WeeklyCalendarDto>> GetWeeklyCalendar([FromQuery] DateTime? weekStart = null)
         {
-            var userId = GetUserId();
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
             var start = weekStart ?? GetStartOfWeek(DateTime.UtcNow);
             var calendar = await _habitService.GetWeeklyCalendarAsync(userId, start);
             return Ok(calendar);
         }
 
         // ===== HELPER METHODS =====
-
-        private int GetUserId()
-        {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                           ?? User.FindFirst("sub")?.Value
-                           ?? User.FindFirst("uid")?.Value;
-
-            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-            {
-                throw new UnauthorizedAccessException("User ID not found in token");
-            }
-
-            return userId;
-        }
 
         private DateTime GetStartOfWeek(DateTime date)
         {

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Lifenote.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Lifenote.Core.DTOs.Note;
 using Lifenote.Core.Interfaces;
-using Lifenote.Core.DTOs;
 
 namespace Lifenote.API.Controllers
 {
@@ -13,48 +11,70 @@ namespace Lifenote.API.Controllers
     public class NoteController : ControllerBase
     {
         private readonly INoteService _noteService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public NoteController(INoteService noteService)
+        public NoteController(INoteService noteService, ICurrentUserService currentUserService)
         {
             _noteService = noteService;
+            _currentUserService = currentUserService;
         }
 
-        // GET: api/notes/{userId}
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<Note>>> GetNotes(int userId)
+        // GET: api/notes
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<NoteDto>>> GetNotes()
         {
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
             var notes = await _noteService.GetAllNotesAsync(userId);
             return Ok(notes);
         }
 
-        // GET: api/notes/{userId}/{id}
-        [HttpGet("{userId}/{id}")]
-        public async Task<ActionResult<Note>> GetNote(int userId, int id)
+        // GET: api/notes/pinned
+        [HttpGet("pinned")]
+        public async Task<ActionResult<IEnumerable<NoteDto>>> GetPinnedNotes()
         {
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
+            var notes = await _noteService.GetPinnedNotesAsync(userId);
+            return Ok(notes);
+        }
+
+        // GET: api/notes/search?q={searchTerm}
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<NoteDto>>> SearchNotes([FromQuery] string q)
+        {
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
+            var notes = await _noteService.SearchNotesAsync(userId, q);
+            return Ok(notes);
+        }
+
+        // GET: api/notes/category/{category}
+        [HttpGet("category/{category}")]
+        public async Task<ActionResult<IEnumerable<NoteDto>>> GetNotesByCategory(string category)
+        {
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
+            var notes = await _noteService.GetNotesByCategoryAsync(userId, category);
+            return Ok(notes);
+        }
+
+        // GET: api/notes/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<NoteDto>> GetNote(int id)
+        {
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
             var note = await _noteService.GetNoteByIdAsync(id, userId);
             if (note == null) return NotFound();
 
             return Ok(note);
         }
 
-        // POST: api/notes/{userId}
-        [HttpPost("{userId}")]
-        public async Task<ActionResult<Note>> CreateNote(int userId, CreateNoteDto createNoteDto)
+        // POST: api/notes
+        [HttpPost]
+        public async Task<ActionResult<NoteDto>> CreateNote([FromBody] CreateNoteDto createNoteDto)
         {
-            var note = new Note
-            {
-                UserId = userId,
-                Title = createNoteDto.Title,
-                Content = createNoteDto.Content,
-                Category = createNoteDto.Category,
-                Tags = createNoteDto.Tags,
-                IsPinned = createNoteDto.IsPinned
-            };
-
             try
             {
-                var createdNote = await _noteService.CreateNoteAsync(note);
-                return CreatedAtAction(nameof(GetNote), new { userId, id = createdNote.Id }, createdNote);
+                var userId = await _currentUserService.GetCurrentUserIdAsync();
+                var created = await _noteService.CreateNoteAsync(userId, createNoteDto);
+                return CreatedAtAction(nameof(GetNote), new { id = created.Id }, created);
             }
             catch (ArgumentException ex)
             {
@@ -62,26 +82,15 @@ namespace Lifenote.API.Controllers
             }
         }
 
-        // PUT: api/notes/{userId}/{id}
-        [HttpPut("{userId}/{id}")]
-        public async Task<ActionResult<Note>> UpdateNote(int userId, int id, UpdateNoteDto updateNoteDto)
+        // PUT: api/notes/{id}
+        [HttpPut("{id}")]
+        public async Task<ActionResult<NoteDto>> UpdateNote(int id, [FromBody] UpdateNoteDto updateNoteDto)
         {
-            var note = new Note
-            {
-                Id = id,
-                UserId = userId,
-                Title = updateNoteDto.Title,
-                Content = updateNoteDto.Content,
-                Category = updateNoteDto.Category,
-                Tags = updateNoteDto.Tags,
-                IsPinned = updateNoteDto.IsPinned,
-                IsArchived = updateNoteDto.IsArchived
-            };
-
             try
             {
-                var updatedNote = await _noteService.UpdateNoteAsync(note);
-                return Ok(updatedNote);
+                var userId = await _currentUserService.GetCurrentUserIdAsync();
+                var updated = await _noteService.UpdateNoteAsync(id, userId, updateNoteDto);
+                return Ok(updated);
             }
             catch (ArgumentException ex)
             {
@@ -93,46 +102,24 @@ namespace Lifenote.API.Controllers
             }
         }
 
-        // DELETE: api/notes/{userId}/{id}
-        [HttpDelete("{userId}/{id}")]
-        public async Task<ActionResult> DeleteNote(int userId, int id)
+        // DELETE: api/notes/{id}
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteNote(int id)
         {
+            var userId = await _currentUserService.GetCurrentUserIdAsync();
             var result = await _noteService.DeleteNoteAsync(id, userId);
             if (!result) return NotFound();
 
             return NoContent();
         }
 
-        // GET: api/notes/{userId}/category/{category}
-        [HttpGet("{userId}/category/{category}")]
-        public async Task<ActionResult<IEnumerable<Note>>> GetNotesByCategory(int userId, string category)
-        {
-            var notes = await _noteService.GetNotesByCategoryAsync(userId, category);
-            return Ok(notes);
-        }
-
-        // GET: api/notes/{userId}/pinned
-        [HttpGet("{userId}/pinned")]
-        public async Task<ActionResult<IEnumerable<Note>>> GetPinnedNotes(int userId)
-        {
-            var notes = await _noteService.GetPinnedNotesAsync(userId);
-            return Ok(notes);
-        }
-
-        // GET: api/notes/{userId}/search?q={searchTerm}
-        [HttpGet("{userId}/search")]
-        public async Task<ActionResult<IEnumerable<Note>>> SearchNotes(int userId, [FromQuery] string q)
-        {
-            var notes = await _noteService.SearchNotesAsync(userId, q);
-            return Ok(notes);
-        }
-
-        // PATCH: api/notes/{userId}/{id}/pin
-        [HttpPatch("{userId}/{id}/pin")]
-        public async Task<ActionResult<Note>> TogglePin(int userId, int id)
+        // PATCH: api/notes/{id}/pin
+        [HttpPatch("{id}/pin")]
+        public async Task<ActionResult<NoteDto>> TogglePin(int id)
         {
             try
             {
+                var userId = await _currentUserService.GetCurrentUserIdAsync();
                 var note = await _noteService.TogglePinNoteAsync(id, userId);
                 return Ok(note);
             }
@@ -142,12 +129,13 @@ namespace Lifenote.API.Controllers
             }
         }
 
-        // PATCH: api/notes/{userId}/{id}/archive
-        [HttpPatch("{userId}/{id}/archive")]
-        public async Task<ActionResult<Note>> ToggleArchive(int userId, int id)
+        // PATCH: api/notes/{id}/archive
+        [HttpPatch("{id}/archive")]
+        public async Task<ActionResult<NoteDto>> ToggleArchive(int id)
         {
             try
             {
+                var userId = await _currentUserService.GetCurrentUserIdAsync();
                 var note = await _noteService.ToggleArchiveNoteAsync(id, userId);
                 return Ok(note);
             }

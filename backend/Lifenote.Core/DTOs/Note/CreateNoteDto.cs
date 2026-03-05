@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace Lifenote.Core.DTOs
+namespace Lifenote.Core.DTOs.Note
 {
     public class CreateNoteDto
     {

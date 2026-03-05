@@ -96,10 +96,7 @@ public partial class LifenoteDbContext : DbContext
 
             entity.HasIndex(e => new { e.UserId, e.CompletedDate }, "IX_HabitLogs_UserId_Date");
 
-            entity.Property(e => e.CompletedAt).HasColumnType("timestamp without time zone");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp without time zone");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.Notes).HasMaxLength(500);
 
             entity.HasOne(d => d.Habit).WithMany(p => p.HabitLogs).HasForeignKey(d => d.HabitId);
@@ -118,9 +115,7 @@ public partial class LifenoteDbContext : DbContext
 
             entity.HasIndex(e => e.UserId, "IX_HabitStreaks_UserId");
 
-            entity.Property(e => e.CalculatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp without time zone");
+            entity.Property(e => e.CalculatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.Habit).WithOne(p => p.HabitStreak).HasForeignKey<HabitStreak>(d => d.HabitId);
 

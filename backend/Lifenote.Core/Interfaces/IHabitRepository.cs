@@ -21,11 +21,6 @@ namespace Lifenote.Core.Interfaces
         Task<bool> RemoveLogAsync(int logId, int userId);
         Task<IEnumerable<HabitLog>> GetLogsAsync(int habitId, int userId, DateTime? startDate = null, DateTime? endDate = null);
 
-        // Streaks
-        Task<HabitStreak?> GetStreakAsync(int habitId, int userId);
-        Task UpdateStreakAsync(HabitStreak streak);
-        Task<HabitStreak> CreateStreakAsync(HabitStreak streak);
-
         // Queries for analytics
         Task<IEnumerable<Habit>> GetHabitsWithTodayStatusAsync(int userId, DateTime today);
         Task<bool> ExistsAsync(int id, int userId);

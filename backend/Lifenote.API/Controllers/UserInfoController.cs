@@ -1,4 +1,5 @@
-﻿using Lifenote.Core.DTOs;
+using Lifenote.API.Services;
+using Lifenote.Core.DTOs;
 using Lifenote.Core.DTOs.UserInfo;
 using Lifenote.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -13,10 +14,12 @@ namespace Lifenote.API.Controllers
     public class UserInfoController : ControllerBase
     {
         private readonly IUserInfoService _userInfoService;
+        private readonly IFirebaseClaimService _firebaseClaimService;
 
-        public UserInfoController(IUserInfoService userService)
+        public UserInfoController(IUserInfoService userService, IFirebaseClaimService firebaseClaimService)
         {
             _userInfoService = userService;
+            _firebaseClaimService = firebaseClaimService;
         }
 
         private string GetFirebaseUid()
@@ -37,6 +40,7 @@ namespace Lifenote.API.Controllers
             var email = GetEmailFromToken() ?? throw new UnauthorizedAccessException("Email missing from token");
 
             var user = await _userInfoService.CreateUserAsync(firebaseUid, email, request);
+            await _firebaseClaimService.SetAppUserIdClaimAsync(firebaseUid, user.Id);
             return CreatedAtAction(nameof(GetCurrentUser), new { id = user.Id }, user);
         }
 

@@ -1,18 +1,18 @@
-﻿using Lifenote.Core.Models;
+using Lifenote.Core.DTOs.Note;
 
 namespace Lifenote.Core.Interfaces
 {
     public interface INoteService
     {
-        Task<IEnumerable<Note>> GetAllNotesAsync(int userId);
-        Task<Note?> GetNoteByIdAsync(int id, int userId);
-        Task<Note> CreateNoteAsync(Note note);
-        Task<Note> UpdateNoteAsync(Note note);
+        Task<IEnumerable<NoteDto>> GetAllNotesAsync(int userId);
+        Task<NoteDto?> GetNoteByIdAsync(int id, int userId);
+        Task<NoteDto> CreateNoteAsync(int userId, CreateNoteDto dto);
+        Task<NoteDto> UpdateNoteAsync(int id, int userId, UpdateNoteDto dto);
         Task<bool> DeleteNoteAsync(int id, int userId);
-        Task<IEnumerable<Note>> GetNotesByCategoryAsync(int userId, string category);
-        Task<IEnumerable<Note>> GetPinnedNotesAsync(int userId);
-        Task<IEnumerable<Note>> SearchNotesAsync(int userId, string searchTerm);
-        Task<Note> TogglePinNoteAsync(int id, int userId);
-        Task<Note> ToggleArchiveNoteAsync(int id, int userId);
+        Task<IEnumerable<NoteDto>> GetNotesByCategoryAsync(int userId, string category);
+        Task<IEnumerable<NoteDto>> GetPinnedNotesAsync(int userId);
+        Task<IEnumerable<NoteDto>> SearchNotesAsync(int userId, string searchTerm);
+        Task<NoteDto> TogglePinNoteAsync(int id, int userId);
+        Task<NoteDto> ToggleArchiveNoteAsync(int id, int userId);
     }
 }

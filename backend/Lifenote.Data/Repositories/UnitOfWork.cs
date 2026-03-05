@@ -9,6 +9,7 @@ namespace Lifenote.Data.Repositories
         public IUserInfoRepository Users { get; private set; }
         public INoteRepository Notes { get; private set; }
         public IHabitRepository Habits { get; private set; }
+        public IHabitStreakRepository HabitStreak{ get; private set; }
 
         public UnitOfWork(LifenoteDbContext context)
         {
@@ -16,6 +17,7 @@ namespace Lifenote.Data.Repositories
             Users = new UserInfoRepository(_context);
             Notes = new NoteRepository(_context);
             Habits = new HabitRepository(_context);
+            HabitStreak = new HabitStreakRepository(_context);
         }
 
         public async Task<int> SaveChangesAsync()

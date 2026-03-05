@@ -142,27 +142,6 @@ namespace Lifenote.Data.Repositories
                 .ToListAsync();
         }
 
-        // === Streaks ===
-
-        public async Task<HabitStreak?> GetStreakAsync(int habitId, int userId)
-        {
-            return await _context.HabitStreaks
-                .FirstOrDefaultAsync(s => s.HabitId == habitId && s.UserId == userId);
-        }
-
-        public async Task UpdateStreakAsync(HabitStreak streak)
-        {
-            streak.CalculatedAt = DateTime.UtcNow;
-            _context.HabitStreaks.Update(streak);
-        }
-
-        public async Task<HabitStreak> CreateStreakAsync(HabitStreak streak)
-        {
-            streak.CalculatedAt = DateTime.UtcNow;
-            await _context.HabitStreaks.AddAsync(streak);
-            return streak;
-        }
-
         // === Queries ===
 
         public async Task<IEnumerable<Habit>> GetHabitsWithTodayStatusAsync(int userId, DateTime today)
