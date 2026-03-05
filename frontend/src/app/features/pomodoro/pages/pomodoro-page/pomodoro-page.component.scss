@@ -1,19 +1,26 @@
-.pomodoro-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+// Pomodoro page — from scratch, theme-aware, mobile-first
+// Uses: --primary, --primary-foreground, --foreground, --muted-foreground, --destructive, --border, --card, --background, --muted
 
-  @media (max-width: 576px) {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$radius-full: 9999px;
+$space-xs: 6px;
+$space-sm: 12px;
+$space-md: 16px;
+$space-lg: 24px;
+$space-xl: 28px;
+
+.pomodoro-page {
+  // .page-content provides width, max-width, padding. Header uses global .page-header, .page-header-content, .page-header-actions.
 }
 
-.btn-add-timer {
+// Match habits-page primary button if needed
+.pomodoro-page .btn-primary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 18px;
+  padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
   font-size: 0.9375rem;
@@ -29,46 +36,124 @@
   }
 }
 
+// —— Timer list ——
+.timer-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-lg;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+
+// —— Timer card ——
 .timer-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.25rem 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: $radius-lg;
+  padding: $space-lg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &.is-running {
+    border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 20%, transparent);
+  }
+
+  @media (min-width: 480px) {
+    padding: $space-xl;
+  }
 }
 
-.timer-card-header {
+.card-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 100%;
-  margin-bottom: 12px;
+  gap: $space-sm;
+  margin-bottom: $space-md;
+  min-height: 40px;
 }
 
-.timer-label {
-  font-size: 0.9375rem;
+.title-btn {
+  flex: 1;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: $space-xs;
+  padding: $space-xs $space-sm;
+  margin: -$space-xs -$space-sm;
+  font: inherit;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--foreground);
+  background: transparent;
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: var(--muted);
+  }
+
+  .title-icon {
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  &:hover .title-icon {
+    opacity: 0.8;
+  }
+}
+
+.title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.title-input {
+  flex: 1;
+  min-width: 0;
+  padding: $space-xs $space-sm;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground);
+  background: var(--background);
+  border: 2px solid var(--primary);
+  border-radius: $radius-sm;
+  outline: none;
+
+  &:focus {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 25%, transparent);
+  }
 }
 
 .btn-remove {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   border: none;
-  border-radius: 8px;
+  border-radius: $radius-sm;
   background: transparent;
   color: var(--muted-foreground);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
 
   &:hover:not(:disabled) {
-    background: var(--muted);
+    background: color-mix(in srgb, var(--destructive) 12%, transparent);
     color: var(--destructive);
   }
 
@@ -78,81 +163,119 @@
   }
 }
 
-.timer-types {
+// —— Type tabs ——
+.type-tabs {
   display: flex;
-  gap: 8px;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
+  gap: $space-xs;
+  margin-bottom: $space-lg;
+  padding: $space-xs;
+  background: var(--muted);
+  border-radius: $radius-md;
 }
 
-.timer-types button {
-  background-color: transparent;
-  color: var(--muted-foreground);
-  border: 2px solid var(--border);
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 600;
+.type-tabs button {
+  flex: 1;
+  min-height: 40px;
+  padding: 0 $space-sm;
+  font: inherit;
   font-size: 0.8125rem;
-}
-
-.timer-types button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.timer-types button.active {
-  background-color: var(--primary);
-  color: var(--primary-foreground);
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.timer-display {
-  font-size: 2.75rem;
-  font-weight: 700;
-  color: var(--foreground);
-  font-family: ui-monospace, monospace;
-  margin-bottom: 1rem;
-  letter-spacing: 0.02em;
-}
-
-.timer-controls {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.timer-controls button {
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 0.875rem;
   font-weight: 600;
+  color: var(--muted-foreground);
+  background: transparent;
+  border: none;
+  border-radius: $radius-sm;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    color: var(--foreground);
+  }
+
+  &.active {
+    background: var(--card);
+    color: var(--primary);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// —— Timer display ——
+.timer-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $space-lg;
+  padding: $space-md 0;
+}
+
+.timer-time {
+  font-size: 3rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--foreground);
+  font-family: ui-monospace, 'SF Mono', monospace;
+  letter-spacing: 0.02em;
+  line-height: 1;
+
+  &.running {
+    color: var(--primary);
+  }
+
+  @media (min-width: 480px) {
+    font-size: 3.5rem;
+  }
+}
+
+// —— Actions ——
+.card-actions {
+  display: flex;
+  gap: $space-sm;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-xs;
+  min-height: 48px;
+  padding: 0 $space-md;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.06);
+  }
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
   }
 }
 
-.start-button {
-  background: var(--primary);
+.btn-start {
+  flex: 1;
+  min-width: 120px;
   color: var(--primary-foreground);
+  background: var(--primary);
 }
 
-.start-button.running {
-  background: var(--destructive);
+.btn-pause {
+  flex: 1;
+  min-width: 120px;
   color: var(--destructive-foreground);
+  background: var(--destructive);
 }
 
-.reset-button {
-  background: var(--secondary);
-  color: var(--secondary-foreground);
+.btn-reset {
+  color: var(--foreground);
+  background: var(--muted);
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--foreground) 10%, var(--muted));
+  }
 }

@@ -2,9 +2,6 @@ import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { Habit, CheckInDto } from '../models/habit.model';
 import { HabitService } from '../services/habit.service';
@@ -16,9 +13,6 @@ import { HabitService } from '../services/habit.service';
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatIconModule
   ],
   templateUrl: './check-in-dialog.component.html',

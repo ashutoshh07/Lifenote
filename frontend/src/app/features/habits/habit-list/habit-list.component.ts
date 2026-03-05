@@ -72,11 +72,18 @@ export class HabitListComponent implements OnInit {
 
   // Update onCheckIn method
   onCheckIn(habit: Habit): void {
-    const dialogRef = this.dialog.open(CheckInDialogComponent, {
-      width: '500px',
+    const dialogConfig: MatDialogConfig<{ habit: Habit }> = {
+      width: '100%',
+      maxWidth: '440px',
+      maxHeight: '90vh',
       data: { habit },
-      disableClose: false
-    });
+      disableClose: false,
+      panelClass: 'check-in-dialog-panel',
+    };
+    if (typeof window !== 'undefined' && window.innerWidth < 576) {
+      dialogConfig.position = { top: '0' };
+    }
+    const dialogRef = this.dialog.open(CheckInDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result?.success) {
