@@ -45,7 +45,11 @@ export class NotesService {
       tap(newNote => {
         this.notesResource.update(res => {
           if (!res) return { data: [newNote], success: true, message: '' };
-          return { ...res, data: [newNote, ...(res.data ?? [])] };
+          const existing = res.data ?? [];
+          if (existing.some(n => n.id === newNote.id)) {
+            return res;
+          }
+          return { ...res, data: [newNote, ...existing] };
         });
       })
     );

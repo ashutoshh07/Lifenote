@@ -13,7 +13,7 @@ import { form, required, minLength, validateTree, FormRoot, FormField } from '@a
   standalone: true,
   imports: [CommonModule, FormsModule, FormRoot, FormField],
   templateUrl: './settings-page.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./settings-page.component.scss'],
 })
 export class SettingsPageComponent implements OnInit {

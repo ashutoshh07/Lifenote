@@ -123,6 +123,8 @@ export class NotesPageComponent implements OnInit {
     }
   }
 
+  private isSaving = false;
+
   saveNote(event: { id: string | null; title: string; content: string; tags: string[] }) {
     const title = event.title.trim() || 'Untitled';
     const content = event.content;
@@ -131,6 +133,12 @@ export class NotesPageComponent implements OnInit {
     // Do not save if title is empty and content is empty
     if (!event.title.trim() && !content.trim()) return;
 
+    // Guard against duplicate concurrent creation requests
+    if (this.isSaving && !event.id) {
+      return;
+    }
+
+    this.isSaving = true;
     this.saveStatus.set('saving');
 
     if (event.id) {
@@ -143,24 +151,32 @@ export class NotesPageComponent implements OnInit {
       };
       this.notesService.updateNote(event.id, noteData).subscribe({
         next: () => {
+          this.isSaving = false;
           // If the note being saved is still the active note, set saveStatus to saved
           if (this.activeNoteId() === event.id) {
             this.saveStatus.set('saved');
           }
         },
-        error: () => this.saveStatus.set('idle')
+        error: () => {
+          this.isSaving = false;
+          this.saveStatus.set('idle');
+        }
       });
     } else {
       const noteData: ICreateNoteDto = { title, content, tags };
       this.notesService.createNote(noteData).subscribe({
         next: (newNote) => {
+          this.isSaving = false;
           // If we were editing a new note (activeNoteId is null), link it to the newly created note
           if (this.activeNoteId() === null) {
             this.activeNoteId.set(newNote.id);
           }
           this.saveStatus.set('saved');
         },
-        error: () => this.saveStatus.set('idle')
+        error: () => {
+          this.isSaving = false;
+          this.saveStatus.set('idle');
+        }
       });
     }
   }

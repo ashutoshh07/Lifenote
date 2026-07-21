@@ -13,7 +13,7 @@ import { GOAL_CATEGORIES, GOAL_STATUSES, GOAL_CATEGORY_COLORS } from '../../../.
   standalone: true,
   imports: [CommonModule, FormsModule, FormRoot, FormField],
   templateUrl: './goal-editor-page.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./goal-editor-page.component.scss']
 })
 export class GoalEditorPageComponent implements OnInit {

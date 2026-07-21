@@ -81,10 +81,13 @@ export class NoteEditorComponent implements OnInit, OnDestroy {
       const active = this.note();
 
       untracked(() => {
-        // Save current note before switching if it was modified
-        if (this.isModified()) {
+        const prevId = this.currentNoteId;
+        const newId = active ? active.id : null;
+
+        // If switching away from an existing note (prevId !== null), auto-save previous note if modified
+        if (prevId && prevId !== newId && this.isModified()) {
           this.save.emit({
-            id: this.currentNoteId,
+            id: prevId,
             title: this.editorTitle(),
             content: this.editorContent(),
             tags: this.editorTags()
@@ -92,7 +95,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy {
         }
 
         // Update current note ID
-        this.currentNoteId = active ? active.id : null;
+        this.currentNoteId = newId;
 
         // Load new note
         if (active) {
@@ -113,8 +116,8 @@ export class NoteEditorComponent implements OnInit, OnDestroy {
   ngOnInit() {}
 
   ngOnDestroy() {
-    // Save any pending changes on component destruction
-    if (this.isModified()) {
+    // Save any pending changes on component destruction for existing note
+    if (this.currentNoteId && this.isModified()) {
       this.save.emit({
         id: this.currentNoteId,
         title: this.editorTitle(),
