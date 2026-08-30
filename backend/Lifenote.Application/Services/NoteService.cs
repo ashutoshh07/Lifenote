@@ -38,15 +38,13 @@ namespace Lifenote.Application.Services
 
         public async Task<NoteDto> CreateNoteAsync(Guid userId, CreateNoteDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Title))
-                throw new DomainException("Note title cannot be empty.");
             if (string.IsNullOrWhiteSpace(dto.Content))
                 throw new DomainException("Note content cannot be empty.");
 
             var note = new Note
             {
                 UserId     = userId,
-                Title      = dto.Title,
+                Title      = dto.Title ?? string.Empty,
                 Content    = dto.Content,
                 Category   = dto.Category,
                 Tags       = ToTagArray(dto.Tags),
@@ -60,15 +58,13 @@ namespace Lifenote.Application.Services
 
         public async Task<NoteDto> UpdateNoteAsync(Guid id, Guid userId, UpdateNoteDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Title))
-                throw new DomainException("Note title cannot be empty.");
             if (string.IsNullOrWhiteSpace(dto.Content))
                 throw new DomainException("Note content cannot be empty.");
 
             var existing = await _unitOfWork.Notes.GetByIdAsync(id, userId)
                 ?? throw new NotFoundException($"Note {id} not found or access denied.");
 
-            existing.Title      = dto.Title;
+            existing.Title      = dto.Title ?? string.Empty;
             existing.Content    = dto.Content;
             existing.Category   = dto.Category;
             existing.Tags       = ToTagArray(dto.Tags);

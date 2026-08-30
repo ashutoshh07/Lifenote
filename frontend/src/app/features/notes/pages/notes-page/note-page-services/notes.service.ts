@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { inject, Injectable, signal, computed } from '@angular/core';
 import { Observable, of, switchMap, tap, map } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 import { INote, ICreateNoteDto, IUpdateNoteDto } from '../../../../../core/models/note.model';
@@ -13,18 +13,24 @@ export class NotesService {
   private apiUrl = `${environment.apiHost}/Note`;
 
   // Signals for reactive state
-  notes = signal<INote[]>([]);
   searchTerm = signal<string>('');
-  isLoading = signal<boolean>(false);
+
+  private searchUrl = computed(() => {
+    const term = this.searchTerm();
+    if (term) {
+      return `${this.apiUrl}/search?q=${encodeURIComponent(term)}`;
+    }
+    return this.apiUrl;
+  });
+
+  notesResource = httpResource<ApiResponse<INote[]>>(() => this.searchUrl());
+
+  notes = computed(() => this.notesResource.value()?.data ?? []);
+  isLoading = computed(() => this.notesResource.isLoading());
 
   getAllNotes(): Observable<INote[]> {
-    this.isLoading.set(true);
     return this.http.get<ApiResponse<INote[]>>(this.apiUrl).pipe(
-      map(res => res.data ?? []),
-      tap(notes => {
-        this.notes.set(notes);
-        this.isLoading.set(false);
-      })
+      map(res => res.data ?? [])
     );
   }
 
@@ -37,7 +43,14 @@ export class NotesService {
     return this.http.post<ApiResponse<INote>>(this.apiUrl, note).pipe(
       map(res => res.data),
       tap(newNote => {
-        this.notes.update(notes => [newNote, ...notes]);
+        this.notesResource.update(res => {
+          if (!res) return { data: [newNote], success: true, message: '' };
+          const existing = res.data ?? [];
+          if (existing.some(n => n.id === newNote.id)) {
+            return res;
+          }
+          return { ...res, data: [newNote, ...existing] };
+        });
       })
     );
   }
@@ -47,9 +60,13 @@ export class NotesService {
       map(res => res.data),
       switchMap(updatedNote => of(updatedNote)),
       tap(updatedNote => {
-        this.notes.update(notes =>
-          notes.map(n => n.id === id ? { ...updatedNote } : n)
-        );
+        this.notesResource.update(res => {
+          if (!res) return res;
+          return {
+            ...res,
+            data: (res.data ?? []).map(n => n.id === id ? { ...updatedNote } : n)
+          };
+        });
       })
     );
   }
@@ -57,7 +74,13 @@ export class NotesService {
   deleteNote(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       tap(() => {
-        this.notes.update(notes => notes.filter(n => n.id !== id));
+        this.notesResource.update(res => {
+          if (!res) return res;
+          return {
+            ...res,
+            data: (res.data ?? []).filter(n => n.id !== id)
+          };
+        });
       })
     );
   }
@@ -66,9 +89,13 @@ export class NotesService {
     return this.http.patch<ApiResponse<INote>>(`${this.apiUrl}/${id}/pin`, {}).pipe(
       map(res => res.data),
       tap(updatedNote => {
-        this.notes.update(notes =>
-          notes.map(n => n.id === id ? updatedNote : n)
-        );
+        this.notesResource.update(res => {
+          if (!res) return res;
+          return {
+            ...res,
+            data: (res.data ?? []).map(n => n.id === id ? updatedNote : n)
+          };
+        });
       })
     );
   }
@@ -76,8 +103,7 @@ export class NotesService {
   searchNotes(term: string): Observable<INote[]> {
     this.searchTerm.set(term);
     return this.http.get<ApiResponse<INote[]>>(`${this.apiUrl}/search?q=${encodeURIComponent(term)}`).pipe(
-      map(res => res.data ?? []),
-      tap(notes => this.notes.set(notes))
+      map(res => res.data ?? [])
     );
   }
 
@@ -85,9 +111,13 @@ export class NotesService {
     return this.http.patch<ApiResponse<INote>>(`${this.apiUrl}/${id}/archive`, {}).pipe(
       map(res => res.data),
       tap(updatedNote => {
-        this.notes.update(notes =>
-          notes.map(n => n.id === id ? updatedNote : n)
-        );
+        this.notesResource.update(res => {
+          if (!res) return res;
+          return {
+            ...res,
+            data: (res.data ?? []).map(n => n.id === id ? updatedNote : n)
+          };
+        });
       })
     );
   }

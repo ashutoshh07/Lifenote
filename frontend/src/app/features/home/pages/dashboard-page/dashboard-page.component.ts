@@ -1,5 +1,5 @@
-import { Component, inject, computed, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, computed, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+
 import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { NotesService } from '../../../notes/pages/notes-page/note-page-services/notes.service';
@@ -18,8 +18,9 @@ import { SkeletonLoaderComponent } from '../../../../shared';
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, GoalCardComponent, EmptyStateComponent, SkeletonLoaderComponent],
+  imports: [RouterModule, GoalCardComponent, EmptyStateComponent, SkeletonLoaderComponent],
   templateUrl: './dashboard-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./dashboard-page.component.scss']
 })
 export class DashboardPageComponent implements OnInit {
@@ -38,7 +39,7 @@ export class DashboardPageComponent implements OnInit {
 
   focusHoursToday = signal<number>(0);
   currentStreak = signal<number>(0);
-  isLoading = signal(true);
+  isLoading = computed(() => this.notesService.isLoading() || this.goalService.isLoading());
 
   get greeting(): string {
     const hour = new Date().getHours();
@@ -55,13 +56,7 @@ export class DashboardPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    forkJoin([
-      this.notesService.getAllNotes(),
-      this.goalService.getAllGoals()
-    ]).subscribe({
-      next: () => this.isLoading.set(false),
-      error: () => this.isLoading.set(false)
-    });
+    
 
     this.pomodoroService.getFocusStats().subscribe({
       next: (res: any) => {
