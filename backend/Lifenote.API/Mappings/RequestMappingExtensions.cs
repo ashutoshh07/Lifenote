@@ -23,8 +23,8 @@ public static class RequestMappingExtensions
 
     public static CreateNoteDto ToDto(this CreateNoteRequest req) => new()
     {
-        Title    = req.Title,
-        Content  = req.Content,
+        Title    = req.Title ?? string.Empty,
+        Content  = req.Content ?? string.Empty,
         Category = req.Category,
         IsPinned = req.IsPinned
     };

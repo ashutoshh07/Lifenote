@@ -9,7 +9,6 @@ namespace Lifenote.API.Models.Requests.Note;
 /// </summary>
 public class CreateNoteRequest
 {
-    [Required]
     [MaxLength(255)]
     public string Title { get; set; } = string.Empty;
 
