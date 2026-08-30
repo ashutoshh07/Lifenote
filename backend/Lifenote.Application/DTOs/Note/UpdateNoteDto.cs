@@ -4,7 +4,6 @@ namespace Lifenote.Application.DTOs.Note
 {
     public class UpdateNoteDto
     {
-        [Required]
         [MaxLength(200)]
         public string Title { get; set; } = string.Empty;
 

@@ -126,7 +126,7 @@ export class NotesPageComponent implements OnInit {
   private isSaving = false;
 
   saveNote(event: { id: string | null; title: string; content: string; tags: string[] }) {
-    const title = event.title.trim() || 'Untitled';
+    const title = event.title.trim();
     const content = event.content;
     const tags = event.tags;
 
