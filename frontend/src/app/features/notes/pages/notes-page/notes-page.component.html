@@ -42,7 +42,7 @@
             @for (note of pinnedNotes(); track note.id) {
               <div class="note-list-item" [class.active]="activeNoteId() === note.id" (click)="selectNote(note)">
                 <div class="item-content">
-                  <h4 class="item-title">{{ note.title || 'Untitled' }}</h4>
+                  <h4 class="item-title">{{ note.title }}</h4>
                   <p class="item-excerpt">{{ getNotePreview(note.content) }}</p>
                   @if (note.tags && note.tags.length > 0) {
                     <div class="item-tags">
@@ -71,7 +71,7 @@
           @for (note of regularNotes(); track note.id) {
             <div class="note-list-item" [class.active]="activeNoteId() === note.id" (click)="selectNote(note)">
               <div class="item-content">
-                <h4 class="item-title">{{ note.title || 'Untitled' }}</h4>
+                <h4 class="item-title">{{ note.title }}</h4>
                 <p class="item-excerpt">{{ getNotePreview(note.content) }}</p>
                 @if (note.tags && note.tags.length > 0) {
                   <div class="item-tags">

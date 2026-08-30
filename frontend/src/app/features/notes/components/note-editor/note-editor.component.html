@@ -63,7 +63,7 @@
       <textarea #contentTextarea class="content-textarea" placeholder="Start writing... (supports markdown)"
                 [ngModel]="editorContent()" (ngModelChange)="editorContent.set($event); triggerChange()"></textarea>
     } @else {
-      <h1 class="preview-title">{{ editorTitle() || 'Untitled' }}</h1>
+      <h1 class="preview-title">{{ editorTitle() }}</h1>
       <div class="preview-content">
         <app-markdown-preview [content]="editorContent()"></app-markdown-preview>
       </div>
